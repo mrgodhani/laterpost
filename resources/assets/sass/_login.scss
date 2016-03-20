@@ -1,0 +1,24 @@
+
+.login-panel {
+  background:none;
+  width:940px;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  .small-text{
+    font-size:20px;
+  }
+  p {
+    font-size:14px;
+    margin-bottom:10px;
+    a{
+      height:1.2rem;
+      color:#777;
+    }
+    a:hover{
+      text-decoration:none;
+      border-bottom:2px dotted #777;
+    }
+  }
+}
