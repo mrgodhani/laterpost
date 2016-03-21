@@ -27,12 +27,19 @@ const mutations = {
         obj.compose_profile = false
         obj.tab_profile = false
       }
+      obj.posts.data.map(function(item){
+        var utc = moment.utc(item.scheduled_at).format()
+        item.scheduled_at = moment.tz(new Date(utc).toISOString(),state.timezone).format('DD MMM YYYY hh:mm a')
+        return item
+      });
       return obj
     })
     state.link = '/auth/twitter?user=' + data.id
   },
   ADD_POST(state,data){
     data.forEach(function(item){
+      var utc = moment.utc(item.scheduled_at).format()
+      item.scheduled_at = moment.tz(new Date(utc).toISOString(),state.timezone).format('DD MMM YYYY hh:mm a')
       var index = _.findIndex(state.accounts,{ 'profile_id' : item.profile_id})
       state.accounts[index].posts.data.push(item)
     })

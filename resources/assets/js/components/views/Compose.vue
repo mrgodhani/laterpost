@@ -132,11 +132,7 @@ export default {
     selectedTabPost(){
       var self = this;
       var currentAccount = _.filter(this.accounts,'tab_profile')
-      return currentAccount[0].posts.data.map(function(item){
-        var utc = moment.utc(item.scheduled_at).format()
-        item.scheduled_at = moment.tz(new Date(utc).toISOString(),self.getTimezone).format('DD MMM YYYY hh:mm a')
-        return item
-      })
+      return currentAccount[0].posts.data
     },
     getAllAccountData(){
       return this.accounts
