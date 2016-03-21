@@ -67,11 +67,11 @@
         </li>
       </ul>
       <div class="composer tab-inner">
-        <div class="empty-timeline" v-if="selectedTab.length === 0">
+        <div class="empty-timeline" v-if="selectedTabPost.length === 0">
           <p class="text-center">No pending posts available. </p>
         </div>
-        <ul class="timeline list-unstyled" v-if="selectedTab.length > 0">
-          <li class="post" v-for="postdata in selectedTab">
+        <ul class="timeline list-unstyled" v-if="selectedTabPost.length > 0">
+          <li class="post" v-for="postdata in selectedTabPost">
             <span class="post-time">
               {{ postdata.scheduled_at }}
             </span>
@@ -96,7 +96,7 @@
 <script>
 import _ from 'lodash'
 import moment from 'moment-timezone'
-import { addPost } from '../../vuex/actions'
+import { addPost,deletePostItem } from '../../vuex/actions'
 
 export default {
   vuex: {
@@ -106,7 +106,8 @@ export default {
       link: state => state.link
     },
     actions: {
-      addPost
+      addPost,
+      deletePostItem
     }
   },
   data(){
@@ -126,6 +127,9 @@ export default {
       return _.filter(this.accounts,'selected')
     },
     selectedTab(){
+      return _.filter(this.accounts,'tab_profile')
+    },
+    selectedTabPost(){
       var self = this;
       var currentAccount = _.filter(this.accounts,'tab_profile')
       return currentAccount[0].posts.data.map(function(item){
@@ -216,8 +220,10 @@ export default {
       })
     },
     deletePost(id){
+      var self = this
       this.$http.delete('posts',{ id : id}).then(function(response){
         UIkit.notify('Post deleted Successfully');
+        self.deletePostItem(self.selectedTab,id)
       })
     }
   }

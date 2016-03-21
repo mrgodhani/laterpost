@@ -32367,7 +32367,8 @@ exports.default = {
       }
     },
     actions: {
-      addPost: _actions.addPost
+      addPost: _actions.addPost,
+      deletePostItem: _actions.deletePostItem
     }
   },
   data: function data() {
@@ -32388,6 +32389,9 @@ exports.default = {
       return _lodash2.default.filter(this.accounts, 'selected');
     },
     selectedTab: function selectedTab() {
+      return _lodash2.default.filter(this.accounts, 'tab_profile');
+    },
+    selectedTabPost: function selectedTabPost() {
       var self = this;
       var currentAccount = _lodash2.default.filter(this.accounts, 'tab_profile');
       return currentAccount[0].posts.data.map(function (item) {
@@ -32475,14 +32479,16 @@ exports.default = {
       });
     },
     deletePost: function deletePost(id) {
+      var self = this;
       this.$http.delete('posts', { id: id }).then(function (response) {
         UIkit.notify('Post deleted Successfully');
+        self.deletePostItem(self.selectedTab, id);
       });
     }
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div>\n    <v-modal :show.sync=\"showModal\">\n      <div slot=\"body\">\n        <v-timepicker name=\"datetime\" :model.sync=\"datetimeselect\" placeholder=\"Choose Date &amp; Time\"></v-timepicker>\n        <br>\n        <p name=\"timezone\"><strong>Timezone</strong> : {{ timezone }}</p>\n      </div>\n      <div slot=\"footer\">\n        <button class=\"btn btn-default\" @click=\"showModal = false\">\n        Cancel\n      </button>\n      <button class=\"btn btn-primary\" @click=\"schedulePost()\">\n      Schedule\n    </button>\n  </div>\n</v-modal>\n<div class=\"composer col-xs-12\">\n  <div id=\"profiles\">\n    <div class=\"profile avatar twitter\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.compose_profile }\" @click=\"markSelected(account)\">\n      <img :src=\"account.avatar\" width=\"44\">\n      <span></span>\n    </div>\n  </div>\n  <a href=\"{{ link }}\" class=\"connect-accounts\">Connect Account</a>\n  <div class=\"countdown\" v-if=\"tweet\">{{ getCount(tweet.length) }}</div>\n  <br>\n  <textarea class=\"form-control\" rows=\"5\" v-model=\"tweet\" placeholder=\"Write your post here\"></textarea>\n  <div class=\"row\" v-if=\"image\">\n    <div class=\"col-xs-3\">\n      <a href=\"#\" class=\"thumbnail\" @click=\"removeImage\">\n        <img :src=\"image\">\n      </a>\n    </div>\n  </div>\n  <div class=\"form-actions col-xs-12\">\n    <div class=\"pull-left\">\n      <span id=\"fileselector\">\n        <label class=\"btn btn-default\" for=\"upload-file-selector\" v-bind:disabled=\"getCount(tweet.length) < 0\">\n          <input id=\"upload-file-selector\" type=\"file\" accept=\"image/gif,image/jpeg,image/png\" @change=\"onFileChange\">\n          <i class=\"fa fa-camera\"></i>\n        </label>\n      </span>\n    </div>\n    <div class=\"pull-right\">\n      <button type=\"button\" class=\"btn btn-default\" v-bind:disabled=\"getCount(tweet.length) < 0 || tweet.length === 0\" @click=\"postNow\"><i class=\"fa fa-fw fa-paper-plane\"></i> Post now</button>\n      <button type=\"button\" class=\"btn btn-primary\" v-bind:disabled=\"getCount(tweet.length) < 0 || tweet.length === 0\" @click=\"showModal = true\"><i class=\"fa fa-fw fa-calendar\"></i> Schedule post</button>\n    </div>\n  </div>\n</div>\n<div class=\"posts\" v-if=\"accounts.length > 0\">\n  <br>\n  <h3><strong>Pending posts</strong></h3>\n  <br>\n  <div class=\"tabs-wrapper\">\n    <ul class=\"tabs clearfix\">\n      <li class=\"tab\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.tab_profile }\" @click=\"selectTab(account)\">\n        <span class=\"profile avatar twitter\">\n          <img :src=\"account.avatar\">\n          <span class=\"small\"></span>\n        </span>\n        <span class=\"tab-meta\">\n          <span class=\"tab-username\">{{ account.username }}</span>\n          <span class=\"tab-updates\">{{ account.posts.data.length }} posts</span>\n        </span></li>\n      </ul>\n      <div class=\"composer tab-inner\">\n        <div class=\"empty-timeline\" v-if=\"selectedTab.length === 0\">\n          <p class=\"text-center\">No pending posts available. </p>\n        </div>\n        <ul class=\"timeline list-unstyled\" v-if=\"selectedTab.length > 0\">\n          <li class=\"post\" v-for=\"postdata in selectedTab\">\n            <span class=\"post-time\">\n              {{ postdata.scheduled_at }}\n            </span>\n            <div class=\"update-body\">\n              {{ postdata.content }}\n            </div>\n            <div class=\"options\">\n              <div class=\"btn-group\" role=\"group\">\n                <button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-pencil\"></i></button>\n                <button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-paper-plane\"></i></button>\n                <button type=\"button\" class=\"btn btn-default\" @click=\"deletePost(postdata.id)\"><i class=\"fa fa-times\"></i></button>\n              </div>\n            </div>\n          </li></ul></div>\n        \n      \n    </div>\n  </div>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div>\n    <v-modal :show.sync=\"showModal\">\n      <div slot=\"body\">\n        <v-timepicker name=\"datetime\" :model.sync=\"datetimeselect\" placeholder=\"Choose Date &amp; Time\"></v-timepicker>\n        <br>\n        <p name=\"timezone\"><strong>Timezone</strong> : {{ timezone }}</p>\n      </div>\n      <div slot=\"footer\">\n        <button class=\"btn btn-default\" @click=\"showModal = false\">\n        Cancel\n      </button>\n      <button class=\"btn btn-primary\" @click=\"schedulePost()\">\n      Schedule\n    </button>\n  </div>\n</v-modal>\n<div class=\"composer col-xs-12\">\n  <div id=\"profiles\">\n    <div class=\"profile avatar twitter\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.compose_profile }\" @click=\"markSelected(account)\">\n      <img :src=\"account.avatar\" width=\"44\">\n      <span></span>\n    </div>\n  </div>\n  <a href=\"{{ link }}\" class=\"connect-accounts\">Connect Account</a>\n  <div class=\"countdown\" v-if=\"tweet\">{{ getCount(tweet.length) }}</div>\n  <br>\n  <textarea class=\"form-control\" rows=\"5\" v-model=\"tweet\" placeholder=\"Write your post here\"></textarea>\n  <div class=\"row\" v-if=\"image\">\n    <div class=\"col-xs-3\">\n      <a href=\"#\" class=\"thumbnail\" @click=\"removeImage\">\n        <img :src=\"image\">\n      </a>\n    </div>\n  </div>\n  <div class=\"form-actions col-xs-12\">\n    <div class=\"pull-left\">\n      <span id=\"fileselector\">\n        <label class=\"btn btn-default\" for=\"upload-file-selector\" v-bind:disabled=\"getCount(tweet.length) < 0\">\n          <input id=\"upload-file-selector\" type=\"file\" accept=\"image/gif,image/jpeg,image/png\" @change=\"onFileChange\">\n          <i class=\"fa fa-camera\"></i>\n        </label>\n      </span>\n    </div>\n    <div class=\"pull-right\">\n      <button type=\"button\" class=\"btn btn-default\" v-bind:disabled=\"getCount(tweet.length) < 0 || tweet.length === 0\" @click=\"postNow\"><i class=\"fa fa-fw fa-paper-plane\"></i> Post now</button>\n      <button type=\"button\" class=\"btn btn-primary\" v-bind:disabled=\"getCount(tweet.length) < 0 || tweet.length === 0\" @click=\"showModal = true\"><i class=\"fa fa-fw fa-calendar\"></i> Schedule post</button>\n    </div>\n  </div>\n</div>\n<div class=\"posts\" v-if=\"accounts.length > 0\">\n  <br>\n  <h3><strong>Pending posts</strong></h3>\n  <br>\n  <div class=\"tabs-wrapper\">\n    <ul class=\"tabs clearfix\">\n      <li class=\"tab\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.tab_profile }\" @click=\"selectTab(account)\">\n        <span class=\"profile avatar twitter\">\n          <img :src=\"account.avatar\">\n          <span class=\"small\"></span>\n        </span>\n        <span class=\"tab-meta\">\n          <span class=\"tab-username\">{{ account.username }}</span>\n          <span class=\"tab-updates\">{{ account.posts.data.length }} posts</span>\n        </span></li>\n      </ul>\n      <div class=\"composer tab-inner\">\n        <div class=\"empty-timeline\" v-if=\"selectedTabPost.length === 0\">\n          <p class=\"text-center\">No pending posts available. </p>\n        </div>\n        <ul class=\"timeline list-unstyled\" v-if=\"selectedTabPost.length > 0\">\n          <li class=\"post\" v-for=\"postdata in selectedTabPost\">\n            <span class=\"post-time\">\n              {{ postdata.scheduled_at }}\n            </span>\n            <div class=\"update-body\">\n              {{ postdata.content }}\n            </div>\n            <div class=\"options\">\n              <div class=\"btn-group\" role=\"group\">\n                <button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-pencil\"></i></button>\n                <button type=\"button\" class=\"btn btn-default\"><i class=\"fa fa-paper-plane\"></i></button>\n                <button type=\"button\" class=\"btn btn-default\" @click=\"deletePost(postdata.id)\"><i class=\"fa fa-times\"></i></button>\n              </div>\n            </div>\n          </li></ul></div>\n        \n      \n    </div>\n  </div>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -32827,7 +32833,7 @@ Object.defineProperty(exports, "__esModule", {
 var saveUserDetail = exports.saveUserDetail = makeAction('SAVE_USER');
 var clearUser = exports.clearUser = makeAction('CLEAR_USER');
 var addPost = exports.addPost = makeAction('ADD_POST');
-var deletePost = exports.deletePost = makeAction('DELETE_POST');
+var deletePostItem = exports.deletePostItem = makeAction('DELETE_POST');
 
 function makeAction(type) {
   return function (_ref) {
@@ -32894,6 +32900,13 @@ var mutations = {
     data.forEach(function (item) {
       var index = _lodash2.default.findIndex(state.accounts, { 'profile_id': item.profile_id });
       state.accounts[index].posts.data.push(item);
+    });
+  },
+  DELETE_POST: function DELETE_POST(state, data, id) {
+    data.forEach(function (item) {
+      var index = _lodash2.default.findIndex(state.accounts, { 'profile_id': item.profile_id });
+      var post_index = _lodash2.default.findIndex(state.accounts[index].posts.data, { 'id': id });
+      state.accounts[index].posts.data.splice(post_index, 1);
     });
   },
   CLEAR_USER: function CLEAR_USER(state) {

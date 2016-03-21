@@ -38,6 +38,13 @@ const mutations = {
       state.accounts[index].posts.data.push(item)
     })
   },
+  DELETE_POST(state,data,id){
+    data.forEach(function(item){
+      var index = _.findIndex(state.accounts,{ 'profile_id' : item.profile_id})
+      var post_index = _.findIndex(state.accounts[index].posts.data,{ 'id' : id })
+      state.accounts[index].posts.data.splice(post_index,1)
+    })
+  },
   CLEAR_USER(state){
     state.user = {},
     state.accounts = []

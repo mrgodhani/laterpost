@@ -21,6 +21,17 @@ class PostService
         $this->postRepo = $postRepo;
     }
 
+    public function queueTweet($image,$data)
+    {
+
+    }
+
+    /**
+     * Create Post Item
+     * @param $image
+     * @param $data
+     * @return \Illuminate\Support\Collection
+     */
     public function createPost($image,$data){
         $accounts = collect(json_decode($data['accounts']))->toArray();
         $post = [];
