@@ -36,7 +36,7 @@ class PostService
             $file = $image->getClientOriginalName();
             Storage::disk('s3')->put($file,fopen($image,'r'));
         }
-        $job = (new TwitterPost(!is_null($image) ? true : false,$file,$image->getMimeType(),$data))->delay(1);
+        $job = (new TwitterPost(!is_null($image) ? true : false,$file,!is_null($image) ? $image->getMimeType() : null ,$data))->delay(1);
         $this->dispatch($job);
     }
 
