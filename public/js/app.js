@@ -35215,7 +35215,7 @@ exports.default = {
     getCount: function getCount() {
       var m;
       var content;
-      var re = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/ig;
+      var re = /(http|https|ftp|ftps)\:\/\/|[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?\b/ig;
       var urls = this.tweet.match(re);
       if (urls !== null && urls.length > 0) {
         content = this.tweet.replace(re, "");
