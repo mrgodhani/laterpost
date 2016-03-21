@@ -1,6 +1,5 @@
 <?php namespace LaterPost\Api;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
 use LaterPost\Api\Transformers\PostTransformer;
 use LaterPost\Http\Requests;
@@ -10,7 +9,6 @@ use LaterPost\Services\TwitterService;
 
 class PostController extends BaseController
 {
-    use DispatchesJobs;
 
     /**
      * @var TwitterService
@@ -55,8 +53,7 @@ class PostController extends BaseController
     public function tweet(Request $request){
         try
         {
-            $job = (new TwitterPost(!is_null($request->file('image')) ? true : false,$request->get('content'),$request->only(['image','base64','accounts'])))->delay(1);
-            $this->dispatch($job);
+            $this->postService->queueTweet($request->file('image'),$request->only(['content','accounts']));
             $this->response->accepted();
         } catch (\Exception $e)
         {

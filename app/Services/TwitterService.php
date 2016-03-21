@@ -59,7 +59,7 @@ class TwitterService
             'multipart' => [
                 [
                     'name' => 'media',
-                    'contents' => fopen($image,'r')
+                    'contents' => $image
                 ],
                 [
                     'name' => 'media_data',
@@ -73,20 +73,22 @@ class TwitterService
     /**
      * Update Status
      * @param bool $media
-     * @param $content
+     * @param null $image
+     * @param null $base64
+     * @param $data
      * @return string
      */
-    public function status_update($media = false, $content, $data){
+    public function status_update($media = false,$image = null,$base64 = null, $data){
         $media_data = null;
         $accounts  = collect(json_decode($data['accounts']))->toArray();
         foreach($accounts as $account){
             $account = $this->accountRepo->findBy('profile_id',$account->profile_id);
             $client = $this->client($account->token,$account->secret);
             if($media){
-                $media_data = collect(json_decode($this->media_upload($data['image'],$data['base64'],$account->token,$account->secret)))->toArray();
+                $media_data = collect(json_decode($this->media_upload($image,$base64,$account->token,$account->secret)))->toArray();
             }
             $params = [
-                'status' => $content,
+                'status' => $data['content'],
                 'media_ids' => $media ? $media_data['media_id'] : null
             ];
             $client->post('statuses/update.json',['query' => $params]);

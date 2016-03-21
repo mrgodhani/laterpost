@@ -18,7 +18,7 @@ elixir(function(mix) {
     mix.sass('app.scss');
     mix.imagemin();
     mix.browserify('app.js');
-    mix.scripts(['vendors/jquery.datetimepicker.min.js'],'public/js/datetimepicker.js');
-    mix.version(['css/app.css', 'js/app.js','js/datetimepicker.js']);
+    mix.scripts(['vendors/bootstrap.js','vendors/jquery.datetimepicker.min.js'],'public/js/lib.js');
+    mix.version(['css/app.css', 'js/app.js','js/lib.js']);
     mix.copy('node_modules/bootstrap-sass/assets/fonts/', 'public/build/fonts/');
 });

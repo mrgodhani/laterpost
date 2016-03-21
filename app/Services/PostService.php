@@ -2,11 +2,14 @@
 
 
 use Carbon\Carbon;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Storage;
+use LaterPost\Jobs\TwitterPost;
 use LaterPost\Repository\PostRepo;
 
 class PostService
 {
+    use DispatchesJobs;
     /**
      * @var PostRepo
      */
@@ -21,9 +24,20 @@ class PostService
         $this->postRepo = $postRepo;
     }
 
+    /**
+     * Queue Tweet
+     * @param $image
+     * @param $data
+     */
     public function queueTweet($image,$data)
     {
-
+        $file = null;
+        if(!is_null($image)){
+            $file = $image->getClientOriginalName();
+            Storage::disk('s3')->put($file,fopen($image,'r'));
+        }
+        $job = (new TwitterPost(!is_null($image) ? true : false,$file,$image->getMimeType(),$data))->delay(1);
+        $this->dispatch($job);
     }
 
     /**
@@ -48,7 +62,7 @@ class PostService
                 'content' => $data['content'],
                 'media_path' => $file_name,
                 'mimetype' => !is_null($image) ? $image->getMimeType() : NULL,
-                'scheduled_at' => $date->toDateTimeString(),
+                'scheduled_at' => $date->format('Y-m-d H:i'),
                 'profile_id' => $account->profile_id,
                 'account_id' => $account->id,
             ]);

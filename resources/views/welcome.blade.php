@@ -20,7 +20,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.25.0/js/uikit.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/2.25.0/js/components/notify.min.js"></script>
-<script src="{{ elixir('js/datetimepicker.js') }}"></script>
+<script src="{{ elixir('js/lib.js') }}"></script>
 <script src="{{ elixir('js/app.js') }}"></script>
 </body>
 </html>

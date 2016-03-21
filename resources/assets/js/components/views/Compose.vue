@@ -80,9 +80,9 @@
             </div>
             <div class="options">
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i></button>
-                <button type="button" class="btn btn-default"><i class="fa fa-paper-plane"></i></button>
-                <button type="button" class="btn btn-default" @click="deletePost(postdata.id)"><i class="fa fa-times"></i></button>
+                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil"></i></button>
+                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Post now"><i class="fa fa-paper-plane"></i></button>
+                <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Delete" @click="deletePost(postdata.id)"><i class="fa fa-times"></i></button>
               </div>
             </div>
           </div>
@@ -209,7 +209,6 @@ export default {
     postNow(){
       var data = new FormData()
       data.append('image',this.files)
-      data.append('base64',this.image)
       data.append('accounts',JSON.stringify(this.allAccounts))
       data.append('content',this.tweet)
       this.$http.post('tweet',data).then(function(response){
