@@ -37,6 +37,8 @@ $api->version('v1', function ($api) {
         $api->get('users/current','LaterPost\Api\UserController@index');
         $api->post('posts','LaterPost\Api\PostController@store');
         $api->post('tweet','LaterPost\Api\PostController@tweet');
+        $api->patch('posts','LaterPost\Api\PostController@update');
+        $api->delete('posts','LaterPost\Api\PostController@delete');
     });
 });
 

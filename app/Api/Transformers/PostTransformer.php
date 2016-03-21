@@ -12,6 +12,7 @@ class PostTransformer extends TransformerAbstract
             'id' => $post->id,
             'content' => $post->content,
             'media_path' => $post->media_path,
+            'mimetype' => $post->mimetype,
             'scheduled_at' => $post->scheduled_at,
             'account_id' => $post->account_id,
             'profile_id' => $post->profile_id

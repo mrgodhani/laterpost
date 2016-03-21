@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import _ from 'lodash'
 
 Vue.use(Vuex)
 
@@ -30,6 +31,12 @@ const mutations = {
       return obj
     })
     state.link = '/auth/twitter?user=' + data.id
+  },
+  ADD_POST(state,data){
+    data.forEach(function(item){
+      var index = _.findIndex(state.accounts,{ 'profile_id' : item.profile_id})
+      state.accounts[index].posts.data.push(item)
+    })
   },
   CLEAR_USER(state){
     state.user = {},

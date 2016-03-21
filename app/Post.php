@@ -12,7 +12,12 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'content', 'media_path', 'scheduled_at','profile_id','account_id'
+        'content',
+        'media_path',
+        'mimetype',
+        'scheduled_at',
+        'profile_id',
+        'account_id'
     ];
 
     /**

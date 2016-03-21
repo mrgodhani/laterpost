@@ -12,7 +12,7 @@
         Cancel
       </button>
       <button class="btn btn-primary"
-      @click="schedulePost(datetime)">
+      @click="schedulePost()">
       Schedule
     </button>
   </div>
@@ -67,16 +67,36 @@
         </li>
       </ul>
       <div class="composer tab-inner">
-        <div class="empty-timeline">
+        <div class="empty-timeline" v-if="selectedTab.length === 0">
           <p class="text-center">No pending posts available. </p>
         </div>
-      </div>
+        <ul class="timeline list-unstyled" v-if="selectedTab.length > 0">
+          <li class="post" v-for="postdata in selectedTab">
+            <span class="post-time">
+              {{ postdata.scheduled_at }}
+            </span>
+            <div class="update-body">
+              {{ postdata.content }}
+            </div>
+            <div class="options">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i></button>
+                <button type="button" class="btn btn-default"><i class="fa fa-paper-plane"></i></button>
+                <button type="button" class="btn btn-default" @click="deletePost(postdata.id)"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
+</div>
 </div>
 </template>
 <script>
 import _ from 'lodash'
+import moment from 'moment-timezone'
+import { addPost } from '../../vuex/actions'
 
 export default {
   vuex: {
@@ -84,6 +104,9 @@ export default {
       timezone: state => state.timezone,
       accounts: state => state.accounts,
       link: state => state.link
+    },
+    actions: {
+      addPost
     }
   },
   data(){
@@ -102,14 +125,17 @@ export default {
     allAccounts(){
       return _.filter(this.accounts,'selected')
     },
+    selectedTab(){
+      var self = this;
+      var currentAccount = _.filter(this.accounts,'tab_profile')
+      return currentAccount[0].posts.data.map(function(item){
+        var utc = moment.utc(item.scheduled_at).format()
+        item.scheduled_at = moment.tz(new Date(utc).toISOString(),self.getTimezone).format('DD MMM YYYY hh:mm a')
+        return item
+      })
+    },
     getAllAccountData(){
       return this.accounts
-    },
-    dateTime(){
-      if(this.datetimeselect !== null) {
-        var time = moment.tz(this.datetimeselect,this.getTimezone).format();
-        return time;
-      }
     }
   },
   methods: {
@@ -130,7 +156,23 @@ export default {
       data.tab_profile = true
     },
     schedulePost(){
-      this.showModal = false;
+      var self = this
+      var data = new FormData()
+      data.append('image',this.files)
+      data.append('accounts',JSON.stringify(this.allAccounts))
+      data.append('content',this.tweet)
+      data.append('scheduled_at',this.datetimeselect)
+      data.append('timezone',this.getTimezone)
+      this.$http.post('posts',data).then(function(response){
+        UIkit.notify('Successfully scheduled post');
+        this.files = null
+        this.image = null
+        this.tweet = null
+        this.showModal = false
+        this.datetimeselect = null
+        self.addPost(response.data.data)
+      })
+
     },
     removeImage(){
       this.image = null
@@ -138,12 +180,15 @@ export default {
     },
     onFileChange(e){
       var files = e.target.files || e.dataTransfer.files;
-      console.log(files.length);
       if (!files.length){
         return;
       }
-      this.createImage(files[0])
-      this.files = files[0]
+      if(files[0].size < 5242880){
+        this.createImage(files[0])
+        this.files = files[0]
+      } else {
+        UIkit.notify('Image size too large')
+      }
       // var data = new FormData()
       // data.append('image',files[0]);
     },
@@ -164,10 +209,15 @@ export default {
       data.append('accounts',JSON.stringify(this.allAccounts))
       data.append('content',this.tweet)
       this.$http.post('tweet',data).then(function(response){
-        UIkit.notify('Successfully posted');
+        UIkit.notify('Successfully posted')
         this.files = null,
         this.image = null,
         this.tweet = null
+      })
+    },
+    deletePost(id){
+      this.$http.delete('posts',{ id : id}).then(function(response){
+        UIkit.notify('Post deleted Successfully');
       })
     }
   }

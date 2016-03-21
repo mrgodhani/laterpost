@@ -16,6 +16,7 @@ class CreatePostsTable extends Migration
             $table->increments('id');
             $table->string('content');
             $table->string('media_path')->nullable()->default(NULL);
+            $table->string('mimetype')->nullable()->default(NULL);
             $table->timestamp('scheduled_at')->nullable()->default(NULL);
             $table->string('profile_id');
             $table->integer('account_id')->unsigned()->index();
