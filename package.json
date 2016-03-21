@@ -13,6 +13,7 @@
     "vue": "^1.0.18",
     "vue-resource": "^0.7.0",
     "vue-router": "^0.7.11",
+    "vue-select": "github:sagalbot/vue-select",
     "vuex": "^0.6.2"
   }
 }

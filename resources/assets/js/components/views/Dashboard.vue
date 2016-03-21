@@ -12,9 +12,6 @@ export default {
     canReuse(transition){
       return false
     }
-  },
-  ready(){
-    this.$dispatch("saveUserDetails");
   }
 }
 </script>

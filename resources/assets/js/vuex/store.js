@@ -6,7 +6,7 @@ import moment from 'moment-timezone'
 Vue.use(Vuex)
 
 const state = {
-  user: {},
+  email: null,
   accounts: [],
   timezone: null,
   link: null
@@ -14,9 +14,7 @@ const state = {
 
 const mutations = {
   SAVE_USER (state,data) {
-    state.user.id = data.id
-    state.user.name = data.name
-    state.user.email = data.email
+    state.email = data.email
     state.timezone = data.timezone
     state.accounts = data.accounts.data.map(function(obj,key){
       if(key === 0){

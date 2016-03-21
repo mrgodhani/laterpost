@@ -25,9 +25,9 @@ export default function()
       if(response.data.message === 'The token has been blacklisted' && response.status === 500){
         console.log("Unauthorized")
         localStorage.removeItem('token')
-        console.log(Vue)
         return this.$route.router.go('/auth/login')
       }
+
 
       if(response.data.message !== 'Token has expired' && response.status === 401) {
         console.log("Unauthorized")

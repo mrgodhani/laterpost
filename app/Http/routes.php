@@ -35,6 +35,7 @@ $api->version('v1', function ($api) {
     $api->get('refresh','LaterPost\Api\AuthController@refresh');
     $api->group(['middleware' => 'api.auth'],function($api){
         $api->get('users/current','LaterPost\Api\UserController@index');
+        $api->get('timezones','LaterPost\Api\UserController@timezone');
         $api->post('posts','LaterPost\Api\PostController@store');
         $api->post('tweet','LaterPost\Api\PostController@tweet');
         $api->patch('posts','LaterPost\Api\PostController@update');

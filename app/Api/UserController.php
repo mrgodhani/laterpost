@@ -85,4 +85,13 @@ class UserController extends BaseController
     {
         //
     }
+
+    /**
+     * Get Timezones
+     * @return array
+     */
+    public function timezone()
+    {
+        return timezone_identifiers_list();
+    }
 }

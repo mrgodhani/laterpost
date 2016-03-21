@@ -142,6 +142,9 @@ export default {
       return this.accounts
     }
   },
+  ready(){
+    this.$dispatch("saveUserDetails");
+  },
   methods: {
     getCount(textlength){
       return 140 - textlength
@@ -161,21 +164,26 @@ export default {
     },
     schedulePost(){
       var self = this
-      var data = new FormData()
-      data.append('image',this.files)
-      data.append('accounts',JSON.stringify(this.allAccounts))
-      data.append('content',this.tweet)
-      data.append('scheduled_at',this.datetimeselect)
-      data.append('timezone',this.getTimezone)
-      this.$http.post('posts',data).then(function(response){
-        UIkit.notify('Successfully scheduled post');
-        this.files = null
-        this.image = null
-        this.tweet = null
+      if(this.tweet !== null) {
+        var data = new FormData()
+        data.append('image',this.files)
+        data.append('accounts',JSON.stringify(this.allAccounts))
+        data.append('content',this.tweet)
+        data.append('scheduled_at',this.datetimeselect)
+        data.append('timezone',this.getTimezone)
+        this.$http.post('posts',data).then(function(response){
+          UIkit.notify('Successfully scheduled post');
+          this.files = null
+          this.image = null
+          this.tweet = ''
+          this.showModal = false
+          this.datetimeselect = null
+          self.addPost(response.data.data)
+        })
+      } else {
+        UIkit.notify('Oops something went wrong');
         this.showModal = false
-        this.datetimeselect = null
-        self.addPost(response.data.data)
-      })
+      }
 
     },
     removeImage(){
@@ -215,7 +223,7 @@ export default {
         UIkit.notify('Successfully posted')
         this.files = null,
         this.image = null,
-        this.tweet = null
+        this.tweet = ''
       })
     },
     deletePost(id){

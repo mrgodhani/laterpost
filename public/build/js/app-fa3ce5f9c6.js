@@ -1,14 +1,540 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
-},{"core-js/library/fn/json/stringify":2}],2:[function(require,module,exports){
+},{"core-js/library/fn/json/stringify":5}],2:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/keys"), __esModule: true };
+},{"core-js/library/fn/object/keys":6}],3:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/symbol"), __esModule: true };
+},{"core-js/library/fn/symbol":7}],4:[function(require,module,exports){
+"use strict";
+
+var _Symbol = require("babel-runtime/core-js/symbol")["default"];
+
+exports["default"] = function (obj) {
+  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
+};
+
+exports.__esModule = true;
+},{"babel-runtime/core-js/symbol":3}],5:[function(require,module,exports){
 var core = require('../../modules/$.core');
 module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
   return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
 };
-},{"../../modules/$.core":3}],3:[function(require,module,exports){
+},{"../../modules/$.core":11}],6:[function(require,module,exports){
+require('../../modules/es6.object.keys');
+module.exports = require('../../modules/$.core').Object.keys;
+},{"../../modules/$.core":11,"../../modules/es6.object.keys":37}],7:[function(require,module,exports){
+require('../../modules/es6.symbol');
+require('../../modules/es6.object.to-string');
+module.exports = require('../../modules/$.core').Symbol;
+},{"../../modules/$.core":11,"../../modules/es6.object.to-string":38,"../../modules/es6.symbol":39}],8:[function(require,module,exports){
+module.exports = function(it){
+  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+  return it;
+};
+},{}],9:[function(require,module,exports){
+var isObject = require('./$.is-object');
+module.exports = function(it){
+  if(!isObject(it))throw TypeError(it + ' is not an object!');
+  return it;
+};
+},{"./$.is-object":24}],10:[function(require,module,exports){
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+},{}],11:[function(require,module,exports){
 var core = module.exports = {version: '1.2.6'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],4:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
+// optional / simple context binding
+var aFunction = require('./$.a-function');
+module.exports = function(fn, that, length){
+  aFunction(fn);
+  if(that === undefined)return fn;
+  switch(length){
+    case 1: return function(a){
+      return fn.call(that, a);
+    };
+    case 2: return function(a, b){
+      return fn.call(that, a, b);
+    };
+    case 3: return function(a, b, c){
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function(/* ...args */){
+    return fn.apply(that, arguments);
+  };
+};
+},{"./$.a-function":8}],13:[function(require,module,exports){
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function(it){
+  if(it == undefined)throw TypeError("Can't call method on  " + it);
+  return it;
+};
+},{}],14:[function(require,module,exports){
+// Thank's IE8 for his funny defineProperty
+module.exports = !require('./$.fails')(function(){
+  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+});
+},{"./$.fails":17}],15:[function(require,module,exports){
+// all enumerable object keys, includes symbols
+var $ = require('./$');
+module.exports = function(it){
+  var keys       = $.getKeys(it)
+    , getSymbols = $.getSymbols;
+  if(getSymbols){
+    var symbols = getSymbols(it)
+      , isEnum  = $.isEnum
+      , i       = 0
+      , key;
+    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
+  }
+  return keys;
+};
+},{"./$":25}],16:[function(require,module,exports){
+var global    = require('./$.global')
+  , core      = require('./$.core')
+  , ctx       = require('./$.ctx')
+  , PROTOTYPE = 'prototype';
+
+var $export = function(type, name, source){
+  var IS_FORCED = type & $export.F
+    , IS_GLOBAL = type & $export.G
+    , IS_STATIC = type & $export.S
+    , IS_PROTO  = type & $export.P
+    , IS_BIND   = type & $export.B
+    , IS_WRAP   = type & $export.W
+    , exports   = IS_GLOBAL ? core : core[name] || (core[name] = {})
+    , target    = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE]
+    , key, own, out;
+  if(IS_GLOBAL)source = name;
+  for(key in source){
+    // contains in native
+    own = !IS_FORCED && target && key in target;
+    if(own && key in exports)continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function(C){
+      var F = function(param){
+        return this instanceof C ? new C(param) : C(param);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    if(IS_PROTO)(exports[PROTOTYPE] || (exports[PROTOTYPE] = {}))[key] = out;
+  }
+};
+// type bitmap
+$export.F = 1;  // forced
+$export.G = 2;  // global
+$export.S = 4;  // static
+$export.P = 8;  // proto
+$export.B = 16; // bind
+$export.W = 32; // wrap
+module.exports = $export;
+},{"./$.core":11,"./$.ctx":12,"./$.global":19}],17:[function(require,module,exports){
+module.exports = function(exec){
+  try {
+    return !!exec();
+  } catch(e){
+    return true;
+  }
+};
+},{}],18:[function(require,module,exports){
+// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+var toIObject = require('./$.to-iobject')
+  , getNames  = require('./$').getNames
+  , toString  = {}.toString;
+
+var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
+  ? Object.getOwnPropertyNames(window) : [];
+
+var getWindowNames = function(it){
+  try {
+    return getNames(it);
+  } catch(e){
+    return windowNames.slice();
+  }
+};
+
+module.exports.get = function getOwnPropertyNames(it){
+  if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
+  return getNames(toIObject(it));
+};
+},{"./$":25,"./$.to-iobject":33}],19:[function(require,module,exports){
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+},{}],20:[function(require,module,exports){
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function(it, key){
+  return hasOwnProperty.call(it, key);
+};
+},{}],21:[function(require,module,exports){
+var $          = require('./$')
+  , createDesc = require('./$.property-desc');
+module.exports = require('./$.descriptors') ? function(object, key, value){
+  return $.setDesc(object, key, createDesc(1, value));
+} : function(object, key, value){
+  object[key] = value;
+  return object;
+};
+},{"./$":25,"./$.descriptors":14,"./$.property-desc":29}],22:[function(require,module,exports){
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = require('./$.cof');
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+},{"./$.cof":10}],23:[function(require,module,exports){
+// 7.2.2 IsArray(argument)
+var cof = require('./$.cof');
+module.exports = Array.isArray || function(arg){
+  return cof(arg) == 'Array';
+};
+},{"./$.cof":10}],24:[function(require,module,exports){
+module.exports = function(it){
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+},{}],25:[function(require,module,exports){
+var $Object = Object;
+module.exports = {
+  create:     $Object.create,
+  getProto:   $Object.getPrototypeOf,
+  isEnum:     {}.propertyIsEnumerable,
+  getDesc:    $Object.getOwnPropertyDescriptor,
+  setDesc:    $Object.defineProperty,
+  setDescs:   $Object.defineProperties,
+  getKeys:    $Object.keys,
+  getNames:   $Object.getOwnPropertyNames,
+  getSymbols: $Object.getOwnPropertySymbols,
+  each:       [].forEach
+};
+},{}],26:[function(require,module,exports){
+var $         = require('./$')
+  , toIObject = require('./$.to-iobject');
+module.exports = function(object, el){
+  var O      = toIObject(object)
+    , keys   = $.getKeys(O)
+    , length = keys.length
+    , index  = 0
+    , key;
+  while(length > index)if(O[key = keys[index++]] === el)return key;
+};
+},{"./$":25,"./$.to-iobject":33}],27:[function(require,module,exports){
+module.exports = true;
+},{}],28:[function(require,module,exports){
+// most Object methods by ES6 should accept primitives
+var $export = require('./$.export')
+  , core    = require('./$.core')
+  , fails   = require('./$.fails');
+module.exports = function(KEY, exec){
+  var fn  = (core.Object || {})[KEY] || Object[KEY]
+    , exp = {};
+  exp[KEY] = exec(fn);
+  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+};
+},{"./$.core":11,"./$.export":16,"./$.fails":17}],29:[function(require,module,exports){
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+},{}],30:[function(require,module,exports){
+module.exports = require('./$.hide');
+},{"./$.hide":21}],31:[function(require,module,exports){
+var def = require('./$').setDesc
+  , has = require('./$.has')
+  , TAG = require('./$.wks')('toStringTag');
+
+module.exports = function(it, tag, stat){
+  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+};
+},{"./$":25,"./$.has":20,"./$.wks":36}],32:[function(require,module,exports){
+var global = require('./$.global')
+  , SHARED = '__core-js_shared__'
+  , store  = global[SHARED] || (global[SHARED] = {});
+module.exports = function(key){
+  return store[key] || (store[key] = {});
+};
+},{"./$.global":19}],33:[function(require,module,exports){
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = require('./$.iobject')
+  , defined = require('./$.defined');
+module.exports = function(it){
+  return IObject(defined(it));
+};
+},{"./$.defined":13,"./$.iobject":22}],34:[function(require,module,exports){
+// 7.1.13 ToObject(argument)
+var defined = require('./$.defined');
+module.exports = function(it){
+  return Object(defined(it));
+};
+},{"./$.defined":13}],35:[function(require,module,exports){
+var id = 0
+  , px = Math.random();
+module.exports = function(key){
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+},{}],36:[function(require,module,exports){
+var store  = require('./$.shared')('wks')
+  , uid    = require('./$.uid')
+  , Symbol = require('./$.global').Symbol;
+module.exports = function(name){
+  return store[name] || (store[name] =
+    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
+};
+},{"./$.global":19,"./$.shared":32,"./$.uid":35}],37:[function(require,module,exports){
+// 19.1.2.14 Object.keys(O)
+var toObject = require('./$.to-object');
+
+require('./$.object-sap')('keys', function($keys){
+  return function keys(it){
+    return $keys(toObject(it));
+  };
+});
+},{"./$.object-sap":28,"./$.to-object":34}],38:[function(require,module,exports){
+
+},{}],39:[function(require,module,exports){
+'use strict';
+// ECMAScript 6 symbols shim
+var $              = require('./$')
+  , global         = require('./$.global')
+  , has            = require('./$.has')
+  , DESCRIPTORS    = require('./$.descriptors')
+  , $export        = require('./$.export')
+  , redefine       = require('./$.redefine')
+  , $fails         = require('./$.fails')
+  , shared         = require('./$.shared')
+  , setToStringTag = require('./$.set-to-string-tag')
+  , uid            = require('./$.uid')
+  , wks            = require('./$.wks')
+  , keyOf          = require('./$.keyof')
+  , $names         = require('./$.get-names')
+  , enumKeys       = require('./$.enum-keys')
+  , isArray        = require('./$.is-array')
+  , anObject       = require('./$.an-object')
+  , toIObject      = require('./$.to-iobject')
+  , createDesc     = require('./$.property-desc')
+  , getDesc        = $.getDesc
+  , setDesc        = $.setDesc
+  , _create        = $.create
+  , getNames       = $names.get
+  , $Symbol        = global.Symbol
+  , $JSON          = global.JSON
+  , _stringify     = $JSON && $JSON.stringify
+  , setter         = false
+  , HIDDEN         = wks('_hidden')
+  , isEnum         = $.isEnum
+  , SymbolRegistry = shared('symbol-registry')
+  , AllSymbols     = shared('symbols')
+  , useNative      = typeof $Symbol == 'function'
+  , ObjectProto    = Object.prototype;
+
+// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+var setSymbolDesc = DESCRIPTORS && $fails(function(){
+  return _create(setDesc({}, 'a', {
+    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
+  })).a != 7;
+}) ? function(it, key, D){
+  var protoDesc = getDesc(ObjectProto, key);
+  if(protoDesc)delete ObjectProto[key];
+  setDesc(it, key, D);
+  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
+} : setDesc;
+
+var wrap = function(tag){
+  var sym = AllSymbols[tag] = _create($Symbol.prototype);
+  sym._k = tag;
+  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
+    configurable: true,
+    set: function(value){
+      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+      setSymbolDesc(this, tag, createDesc(1, value));
+    }
+  });
+  return sym;
+};
+
+var isSymbol = function(it){
+  return typeof it == 'symbol';
+};
+
+var $defineProperty = function defineProperty(it, key, D){
+  if(D && has(AllSymbols, key)){
+    if(!D.enumerable){
+      if(!has(it, HIDDEN))setDesc(it, HIDDEN, createDesc(1, {}));
+      it[HIDDEN][key] = true;
+    } else {
+      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
+      D = _create(D, {enumerable: createDesc(0, false)});
+    } return setSymbolDesc(it, key, D);
+  } return setDesc(it, key, D);
+};
+var $defineProperties = function defineProperties(it, P){
+  anObject(it);
+  var keys = enumKeys(P = toIObject(P))
+    , i    = 0
+    , l = keys.length
+    , key;
+  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
+  return it;
+};
+var $create = function create(it, P){
+  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
+};
+var $propertyIsEnumerable = function propertyIsEnumerable(key){
+  var E = isEnum.call(this, key);
+  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key]
+    ? E : true;
+};
+var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
+  var D = getDesc(it = toIObject(it), key);
+  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
+  return D;
+};
+var $getOwnPropertyNames = function getOwnPropertyNames(it){
+  var names  = getNames(toIObject(it))
+    , result = []
+    , i      = 0
+    , key;
+  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN)result.push(key);
+  return result;
+};
+var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
+  var names  = getNames(toIObject(it))
+    , result = []
+    , i      = 0
+    , key;
+  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
+  return result;
+};
+var $stringify = function stringify(it){
+  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
+  var args = [it]
+    , i    = 1
+    , $$   = arguments
+    , replacer, $replacer;
+  while($$.length > i)args.push($$[i++]);
+  replacer = args[1];
+  if(typeof replacer == 'function')$replacer = replacer;
+  if($replacer || !isArray(replacer))replacer = function(key, value){
+    if($replacer)value = $replacer.call(this, key, value);
+    if(!isSymbol(value))return value;
+  };
+  args[1] = replacer;
+  return _stringify.apply($JSON, args);
+};
+var buggyJSON = $fails(function(){
+  var S = $Symbol();
+  // MS Edge converts symbol values to JSON as {}
+  // WebKit converts symbol values to JSON as null
+  // V8 throws on boxed symbols
+  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
+});
+
+// 19.4.1.1 Symbol([description])
+if(!useNative){
+  $Symbol = function Symbol(){
+    if(isSymbol(this))throw TypeError('Symbol is not a constructor');
+    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
+  };
+  redefine($Symbol.prototype, 'toString', function toString(){
+    return this._k;
+  });
+
+  isSymbol = function(it){
+    return it instanceof $Symbol;
+  };
+
+  $.create     = $create;
+  $.isEnum     = $propertyIsEnumerable;
+  $.getDesc    = $getOwnPropertyDescriptor;
+  $.setDesc    = $defineProperty;
+  $.setDescs   = $defineProperties;
+  $.getNames   = $names.get = $getOwnPropertyNames;
+  $.getSymbols = $getOwnPropertySymbols;
+
+  if(DESCRIPTORS && !require('./$.library')){
+    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
+  }
+}
+
+var symbolStatics = {
+  // 19.4.2.1 Symbol.for(key)
+  'for': function(key){
+    return has(SymbolRegistry, key += '')
+      ? SymbolRegistry[key]
+      : SymbolRegistry[key] = $Symbol(key);
+  },
+  // 19.4.2.5 Symbol.keyFor(sym)
+  keyFor: function keyFor(key){
+    return keyOf(SymbolRegistry, key);
+  },
+  useSetter: function(){ setter = true; },
+  useSimple: function(){ setter = false; }
+};
+// 19.4.2.2 Symbol.hasInstance
+// 19.4.2.3 Symbol.isConcatSpreadable
+// 19.4.2.4 Symbol.iterator
+// 19.4.2.6 Symbol.match
+// 19.4.2.8 Symbol.replace
+// 19.4.2.9 Symbol.search
+// 19.4.2.10 Symbol.species
+// 19.4.2.11 Symbol.split
+// 19.4.2.12 Symbol.toPrimitive
+// 19.4.2.13 Symbol.toStringTag
+// 19.4.2.14 Symbol.unscopables
+$.each.call((
+  'hasInstance,isConcatSpreadable,iterator,match,replace,search,' +
+  'species,split,toPrimitive,toStringTag,unscopables'
+).split(','), function(it){
+  var sym = wks(it);
+  symbolStatics[it] = useNative ? sym : wrap(sym);
+});
+
+setter = true;
+
+$export($export.G + $export.W, {Symbol: $Symbol});
+
+$export($export.S, 'Symbol', symbolStatics);
+
+$export($export.S + $export.F * !useNative, 'Object', {
+  // 19.1.2.2 Object.create(O [, Properties])
+  create: $create,
+  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
+  defineProperty: $defineProperty,
+  // 19.1.2.3 Object.defineProperties(O, Properties)
+  defineProperties: $defineProperties,
+  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
+  // 19.1.2.7 Object.getOwnPropertyNames(O)
+  getOwnPropertyNames: $getOwnPropertyNames,
+  // 19.1.2.8 Object.getOwnPropertySymbols(O)
+  getOwnPropertySymbols: $getOwnPropertySymbols
+});
+
+// 24.3.2 JSON.stringify(value [, replacer [, space]])
+$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
+
+// 19.4.3.5 Symbol.prototype[@@toStringTag]
+setToStringTag($Symbol, 'Symbol');
+// 20.2.1.9 Math[@@toStringTag]
+setToStringTag(Math, 'Math', true);
+// 24.3.3 JSON[@@toStringTag]
+setToStringTag(global.JSON, 'JSON', true);
+},{"./$":25,"./$.an-object":9,"./$.descriptors":14,"./$.enum-keys":15,"./$.export":16,"./$.fails":17,"./$.get-names":18,"./$.global":19,"./$.has":20,"./$.is-array":23,"./$.keyof":26,"./$.library":27,"./$.property-desc":29,"./$.redefine":30,"./$.set-to-string-tag":31,"./$.shared":32,"./$.to-iobject":33,"./$.uid":35,"./$.wks":36}],40:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -12363,7 +12889,7 @@ if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 module.exports={
 	"version": "2016b",
 	"zones": [
@@ -12957,11 +13483,11 @@ module.exports={
 		"Pacific/Pohnpei|Pacific/Ponape"
 	]
 }
-},{}],6:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var moment = module.exports = require("./moment-timezone");
 moment.tz.load(require('./data/packed/latest.json'));
 
-},{"./data/packed/latest.json":5,"./moment-timezone":7}],7:[function(require,module,exports){
+},{"./data/packed/latest.json":41,"./moment-timezone":43}],43:[function(require,module,exports){
 //! moment-timezone.js
 //! version : 0.5.2
 //! author : Tim Wood
@@ -13562,7 +14088,7 @@ moment.tz.load(require('./data/packed/latest.json'));
 	return moment;
 }));
 
-},{"moment":8}],8:[function(require,module,exports){
+},{"moment":44}],44:[function(require,module,exports){
 //! moment.js
 //! version : 2.12.0
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -17251,7 +17777,7 @@ moment.tz.load(require('./data/packed/latest.json'));
     return _moment;
 
 }));
-},{}],9:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -17344,7 +17870,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],10:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -17644,7 +18170,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],11:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 /**
  * Before Interceptor.
  */
@@ -17664,7 +18190,7 @@ module.exports = {
 
 };
 
-},{"../util":34}],12:[function(require,module,exports){
+},{"../util":70}],48:[function(require,module,exports){
 /**
  * Base client.
  */
@@ -17731,7 +18257,7 @@ function parseHeaders(str) {
     return headers;
 }
 
-},{"../../promise":27,"../../util":34,"./xhr":15}],13:[function(require,module,exports){
+},{"../../promise":63,"../../util":70,"./xhr":51}],49:[function(require,module,exports){
 /**
  * JSONP client.
  */
@@ -17781,7 +18307,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":27,"../../util":34}],14:[function(require,module,exports){
+},{"../../promise":63,"../../util":70}],50:[function(require,module,exports){
 /**
  * XDomain client (Internet Explorer).
  */
@@ -17820,7 +18346,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":27,"../../util":34}],15:[function(require,module,exports){
+},{"../../promise":63,"../../util":70}],51:[function(require,module,exports){
 /**
  * XMLHttp client.
  */
@@ -17872,7 +18398,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":27,"../../util":34}],16:[function(require,module,exports){
+},{"../../promise":63,"../../util":70}],52:[function(require,module,exports){
 /**
  * CORS Interceptor.
  */
@@ -17911,7 +18437,7 @@ function crossOrigin(request) {
     return (requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host);
 }
 
-},{"../util":34,"./client/xdr":14}],17:[function(require,module,exports){
+},{"../util":70,"./client/xdr":50}],53:[function(require,module,exports){
 /**
  * Header Interceptor.
  */
@@ -17939,7 +18465,7 @@ module.exports = {
 
 };
 
-},{"../util":34}],18:[function(require,module,exports){
+},{"../util":70}],54:[function(require,module,exports){
 /**
  * Service for sending network requests.
  */
@@ -18039,7 +18565,7 @@ Http.headers = {
 
 module.exports = _.http = Http;
 
-},{"../promise":27,"../util":34,"./before":11,"./client":12,"./cors":16,"./header":17,"./interceptor":19,"./jsonp":20,"./method":21,"./mime":22,"./timeout":23}],19:[function(require,module,exports){
+},{"../promise":63,"../util":70,"./before":47,"./client":48,"./cors":52,"./header":53,"./interceptor":55,"./jsonp":56,"./method":57,"./mime":58,"./timeout":59}],55:[function(require,module,exports){
 /**
  * Interceptor factory.
  */
@@ -18086,7 +18612,7 @@ function when(value, fulfilled, rejected) {
     return promise.then(fulfilled, rejected);
 }
 
-},{"../promise":27,"../util":34}],20:[function(require,module,exports){
+},{"../promise":63,"../util":70}],56:[function(require,module,exports){
 /**
  * JSONP Interceptor.
  */
@@ -18106,7 +18632,7 @@ module.exports = {
 
 };
 
-},{"./client/jsonp":13}],21:[function(require,module,exports){
+},{"./client/jsonp":49}],57:[function(require,module,exports){
 /**
  * HTTP method override Interceptor.
  */
@@ -18125,7 +18651,7 @@ module.exports = {
 
 };
 
-},{}],22:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 /**
  * Mime Interceptor.
  */
@@ -18163,7 +18689,7 @@ module.exports = {
 
 };
 
-},{"../util":34}],23:[function(require,module,exports){
+},{"../util":70}],59:[function(require,module,exports){
 /**
  * Timeout Interceptor.
  */
@@ -18195,7 +18721,7 @@ module.exports = function () {
     };
 };
 
-},{}],24:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * Install plugin.
  */
@@ -18250,7 +18776,7 @@ if (window.Vue) {
 
 module.exports = install;
 
-},{"./http":18,"./promise":27,"./resource":28,"./url":29,"./util":34}],25:[function(require,module,exports){
+},{"./http":54,"./promise":63,"./resource":64,"./url":65,"./util":70}],61:[function(require,module,exports){
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
  */
@@ -18431,7 +18957,7 @@ p.catch = function (onRejected) {
 
 module.exports = Promise;
 
-},{"../util":34}],26:[function(require,module,exports){
+},{"../util":70}],62:[function(require,module,exports){
 /**
  * URL Template v2.0.6 (https://github.com/bramstein/url-template)
  */
@@ -18583,7 +19109,7 @@ exports.encodeReserved = function (str) {
     }).join('');
 };
 
-},{}],27:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /**
  * Promise adapter.
  */
@@ -18694,7 +19220,7 @@ p.always = function (callback) {
 
 module.exports = Promise;
 
-},{"./lib/promise":25,"./util":34}],28:[function(require,module,exports){
+},{"./lib/promise":61,"./util":70}],64:[function(require,module,exports){
 /**
  * Service for interacting with RESTful services.
  */
@@ -18806,7 +19332,7 @@ Resource.actions = {
 
 module.exports = _.resource = Resource;
 
-},{"./util":34}],29:[function(require,module,exports){
+},{"./util":70}],65:[function(require,module,exports){
 /**
  * Service for URL templating.
  */
@@ -18938,7 +19464,7 @@ function serialize(params, obj, scope) {
 
 module.exports = _.url = Url;
 
-},{"../util":34,"./legacy":30,"./query":31,"./root":32,"./template":33}],30:[function(require,module,exports){
+},{"../util":70,"./legacy":66,"./query":67,"./root":68,"./template":69}],66:[function(require,module,exports){
 /**
  * Legacy Transform.
  */
@@ -18986,7 +19512,7 @@ function encodeUriQuery(value, spaces) {
         replace(/%20/g, (spaces ? '%20' : '+'));
 }
 
-},{"../util":34}],31:[function(require,module,exports){
+},{"../util":70}],67:[function(require,module,exports){
 /**
  * Query Parameter Transform.
  */
@@ -19012,7 +19538,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":34}],32:[function(require,module,exports){
+},{"../util":70}],68:[function(require,module,exports){
 /**
  * Root Prefix Transform.
  */
@@ -19030,7 +19556,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":34}],33:[function(require,module,exports){
+},{"../util":70}],69:[function(require,module,exports){
 /**
  * URL Template (RFC 6570) Transform.
  */
@@ -19048,7 +19574,7 @@ module.exports = function (options) {
     return url;
 };
 
-},{"../lib/url-template":26}],34:[function(require,module,exports){
+},{"../lib/url-template":62}],70:[function(require,module,exports){
 /**
  * Utility functions.
  */
@@ -19172,7 +19698,7 @@ function merge(target, source, deep) {
     }
 }
 
-},{}],35:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*!
  * vue-router v0.7.11
  * (c) 2016 Evan You
@@ -21822,7 +22348,416 @@ function merge(target, source, deep) {
   return Router;
 
 }));
-},{}],36:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.dropdown[_v-20e12e00] {\n  position: relative;\n}\n\n.open .dropdown-toggle[_v-20e12e00],\n.open .dropdown-menu[_v-20e12e00] {\n  border-color: rgba(60,60,60,.26);\n}\n\n.open-indicator[_v-20e12e00] {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  display: inline-block;\n  cursor: pointer;\n  pointer-events: all;\n  -webkit-transition: all 150ms cubic-bezier(1.000, -0.115, 0.975, 0.855);\n  transition: all 150ms cubic-bezier(1.000, -0.115, 0.975, 0.855);\n  -webkit-transition-timing-function: cubic-bezier(1.000, -0.115, 0.975, 0.855);\n          transition-timing-function: cubic-bezier(1.000, -0.115, 0.975, 0.855);\n}\n\n.open .open-indicator[_v-20e12e00] {\n  -webkit-transform: rotate(180deg);\n          transform: rotate(180deg);\n}\n\n.dropdown-toggle[_v-20e12e00] {\n  display: block;\n  padding: 0;\n  background: none;\n  border: 1px solid rgba(60,60,60,.26);\n  border-radius: 4px;\n  white-space: normal;\n}\n.searchable .dropdown-toggle[_v-20e12e00] {\n  cursor: text;\n}\n\n.open .dropdown-toggle[_v-20e12e00] {\n  border-bottom: none;\n  border-bottom-left-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.dropdown-menu[_v-20e12e00] {\n  margin: 0;\n  width: 100%;\n  overflow-y: scroll;\n  border-top: none;\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n}\n\n.selected-tag[_v-20e12e00] {\n  color: #333;\n  background-color: #f0f0f0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  height: 26px;\n  margin: 4px 1px 0px 3px;\n  padding: 0 0.25em;\n  float: left;\n  line-height: 1.7em;\n}\n\n.selected-tag .close[_v-20e12e00] {\n  float: none;\n  margin-right: 0;\n  font-size: 20px;\n}\n\ninput[type=search][_v-20e12e00],\ninput[type=search][_v-20e12e00]:focus {\n  display: inline-block;\n  border: none;\n  outline: none;\n  margin: 0;\n  padding: 0 .5em;\n  width: 10em;\n  max-width: 100%;\n  background: none;\n  position: relative;\n  box-shadow: none;\n  float: left;\n  clear: none;\n}\n\ninput[type=search][_v-20e12e00]:disabled {\n  cursor: pointer;\n}\n\nli a[_v-20e12e00] {\n  cursor: pointer;\n}\n\n.active a[_v-20e12e00] {\n  background: rgba(50,50,50,.1);\n  color: #333;\n}\n\n.highlight a[_v-20e12e00],\nli:hover > a[_v-20e12e00] {\n  background: #f0f0f0;\n  color: #333;\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  props: {
+    /**
+     * Contains the currently selected value. Very similar to a
+     * `value` attribute on an <input>. In most cases, you'll want
+     * to set this as a two-way binding, using :value.sync. However,
+     * this will not work with Vuex, in which case you'll need to use
+     * the onChange callback property.
+     * @type {Object||String||null}
+     */
+    value: {
+      default: null
+    },
+
+    /**
+     * An array of strings or objects to be used as dropdown choices.
+     * If you are using an array of objects, vue-select will look for
+     * a `label` key (ex. [{label: 'This is Foo', value: 'foo'}]). A
+     * custom label key can be set with the `label` prop.
+     * @type {Object}
+     */
+    options: {
+      type: Array,
+      default: function _default() {
+        return [];
+      }
+    },
+
+    /**
+     * Sets the max-height property on the dropdown list.
+     * @deprecated
+     * @type {String}
+     */
+    maxHeight: {
+      type: String,
+      default: '400px'
+    },
+
+    /**
+     * Enable/disable filtering the options.
+     * @type {Boolean}
+     */
+    searchable: {
+      type: Boolean,
+      default: true
+    },
+
+    /**
+     * Equivalent to the `multiple` attribute on a `<select>` input.
+     * @type {Object}
+     */
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+
+    /**
+     * Equivalent to the `placeholder` attribute on an `<input>`.
+     * @type {Object}
+     */
+    placeholder: {
+      type: String,
+      default: ''
+    },
+
+    /**
+     * Sets a Vue transition property on the `.dropdown-menu`. vue-select
+     * does not include CSS for transitions, you'll need to add them yourself.
+     * @type {String}
+     */
+    transition: {
+      type: String,
+      default: 'expand'
+    },
+
+    /**
+     * Enables/disables clearing the search text when an option is selected.
+     * @type {Boolean}
+     */
+    clearSearchOnSelect: {
+      type: Boolean,
+      default: true
+    },
+
+    /**
+     * Tells vue-select what key to use when generating option
+     * labels when each `option` is an object.
+     * @type {String}
+     */
+    label: {
+      type: String,
+      default: 'label'
+    },
+
+    /**
+     * An optional callback function that is called each time the selected
+     * value(s) change. When integrating with Vuex, use this callback to trigger
+     * an action, rather than using :value.sync to retreive the selected value.
+     * @type {Function}
+     * @default {null}
+     */
+    onChange: Function
+  },
+
+  data: function data() {
+    return {
+      search: '',
+      open: false,
+      typeAheadPointer: -1
+    };
+  },
+
+
+  watch: {
+    value: function value(val, old) {
+      this.onChange && val !== old ? this.onChange(val) : null;
+    },
+    options: function options() {
+      this.$set('value', this.multiple ? [] : null);
+    },
+    multiple: function multiple(val) {
+      this.$set('value', val ? [] : null);
+    },
+    filteredOptions: function filteredOptions() {
+      this.typeAheadPointer = 0;
+    }
+  },
+
+  methods: {
+
+    /**
+     * Select a given option.
+     * @param  {Object||String} option
+     * @return {void}
+     */
+
+    select: function select(option) {
+      if (!this.isOptionSelected(option)) {
+        if (this.multiple) {
+
+          if (!this.value) {
+            this.$set('value', [option]);
+          } else {
+            this.value.push(option);
+          }
+        } else {
+          this.value = option;
+        }
+      } else {
+        if (this.multiple) {
+          this.value.$remove(option);
+        }
+      }
+
+      this.onAfterSelect(option);
+    },
+
+
+    /**
+     * Called from this.select after each selection.
+     * @param  {Object||String} option
+     * @return {void}
+     */
+    onAfterSelect: function onAfterSelect(option) {
+      if (!this.multiple) {
+        this.open = !this.open;
+      }
+
+      if (this.clearSearchOnSelect) {
+        this.search = '';
+      }
+
+      // if( this.onChange ) {
+      //   this.onChange(this.$get('value'))
+      // }
+    },
+
+
+    /**
+     * Toggle the visibility of the dropdown menu.
+     * @param  {Event} e
+     * @return {void}
+     */
+    toggleDropdown: function toggleDropdown(e) {
+      if (e.target === this.$els.openIndicator || e.target === this.$els.search || e.target === this.$els.toggle || e.target === this.$el) {
+        if (this.open) {
+          this.$els.search.blur(); // dropdown will close on blur
+        } else {
+            this.open = true;
+            this.$els.search.focus();
+          }
+      }
+    },
+
+
+    /**
+     * Check if the given option is currently selected.
+     * @param  {Object||String}  option
+     * @return {Boolean}         True when selected || False otherwise
+     */
+    isOptionSelected: function isOptionSelected(option) {
+      if (this.multiple && this.value) {
+        return this.value.indexOf(option) !== -1;
+      }
+
+      return this.value === option;
+    },
+
+
+    /**
+     * If the selected option has option['value'] return it.
+     * Otherwise, return the entire option.
+     * @param  {Object||String} option
+     * @return {Object||String}
+     */
+    getOptionValue: function getOptionValue(option) {
+      if ((typeof option === 'undefined' ? 'undefined' : (0, _typeof3.default)(option)) === 'object' && option.value) {
+        return option.value;
+      }
+
+      return option;
+    },
+
+
+    /**
+     * Generate the option label text. If {option}
+     * is an object, return option[this.label].
+     *
+     * @param  {Object || String} option
+     * @return {String}
+     */
+    getOptionLabel: function getOptionLabel(option) {
+      if ((typeof option === 'undefined' ? 'undefined' : (0, _typeof3.default)(option)) === 'object') {
+        if (this.label && option[this.label]) {
+          return option[this.label];
+        } else if (option.label) {
+          return option.label;
+        }
+      }
+      return option;
+    },
+
+
+    /**
+     * Move the typeAheadPointer visually up the list by
+     * subtracting the current index by one.
+     * @return {void}
+     */
+    typeAheadUp: function typeAheadUp() {
+      if (this.typeAheadPointer > 0) this.typeAheadPointer--;
+    },
+
+
+    /**
+     * Move the typeAheadPointer visually down the list by
+     * adding the current index by one.
+     * @return {void}
+     */
+    typeAheadDown: function typeAheadDown() {
+      if (this.typeAheadPointer < this.filteredOptions.length - 1) this.typeAheadPointer++;
+    },
+
+
+    /**
+     * Select the option at the current typeAheadPointer position.
+     * Optionally clear the search input on selection.
+     * @return {void}
+     */
+    typeAheadSelect: function typeAheadSelect() {
+      if (this.filteredOptions[this.typeAheadPointer]) {
+        this.select(this.filteredOptions[this.typeAheadPointer]);
+      }
+
+      if (this.clearSearchOnSelect) {
+        this.search = "";
+      }
+    },
+
+
+    /**
+     * If there is any text in the search input, remove it.
+     * Otherwise, blur the search input to close the dropdown.
+     * @return {[type]} [description]
+     */
+    onEscape: function onEscape() {
+      if (!this.search.length) {
+        this.$els.search.blur();
+      } else {
+        this.$set('search', '');
+      }
+    },
+
+
+    /**
+     * Delete the value on Delete keypress when there is no
+     * text in the search input, & there's tags to delete
+     * @return {this.value}
+     */
+    maybeDeleteValue: function maybeDeleteValue() {
+      if (!this.$els.search.value.length && this.value) {
+        return this.multiple ? this.value.pop() : this.$set('value', null);
+      }
+    }
+  },
+
+  computed: {
+
+    /**
+     * Classes to be output on .dropdown
+     * @return {Object}
+     */
+
+    dropdownClasses: function dropdownClasses() {
+      return {
+        open: this.open,
+        searchable: this.searchable
+      };
+    },
+
+
+    /**
+     * Return the placeholder string if it's set
+     * & there is no value selected.
+     * @return {String} Placeholder text
+     */
+    searchPlaceholder: function searchPlaceholder() {
+      if (this.isValueEmpty && this.placeholder) {
+        return this.placeholder;
+      }
+    },
+
+
+    /**
+     * The currently available options, filtered
+     * by the search elements value.
+     * @return {[type]} [description]
+     */
+    filteredOptions: function filteredOptions() {
+      return this.$options.filters.filterBy(this.options, this.search);
+    },
+
+
+    /**
+     * Check if there aren't any options selected.
+     * @return {Boolean}
+     */
+    isValueEmpty: function isValueEmpty() {
+      if (this.value) {
+        if ((0, _typeof3.default)(this.value) === 'object') {
+          return !(0, _keys2.default)(this.value).length;
+        }
+        return !this.value.length;
+      }
+
+      return true;
+    },
+
+
+    /**
+     * Return the current value in array format.
+     * @return {Array}
+     */
+    valueAsArray: function valueAsArray() {
+      if (this.multiple) {
+        return this.value;
+      } else if (this.value) {
+        return [this.value];
+      }
+
+      return [];
+    }
+  }
+
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"dropdown\" :class=\"dropdownClasses\" _v-20e12e00=\"\">\n  <div v-el:toggle=\"\" @mousedown.prevent=\"toggleDropdown\" class=\"dropdown-toggle clearfix\" type=\"button\" _v-20e12e00=\"\">\n      <span class=\"form-control\" v-if=\"!searchable &amp;&amp; isValueEmpty\" _v-20e12e00=\"\">\n        {{ placeholder }}\n      </span>\n\n      <span class=\"selected-tag\" v-for=\"option in valueAsArray\" _v-20e12e00=\"\">\n        {{ getOptionLabel(option) }}\n        <button v-if=\"multiple\" @click=\"select(option)\" type=\"button\" class=\"close\" _v-20e12e00=\"\">\n          <span aria-hidden=\"true\" _v-20e12e00=\"\">×</span>\n        </button>\n      </span>\n\n      <input v-el:search=\"\" v-show=\"searchable\" v-model=\"search\" @keyup.delete=\"maybeDeleteValue\" @keyup.esc=\"onEscape\" @keyup.up.prevent=\"typeAheadUp\" @keyup.down.prevent=\"typeAheadDown\" @keyup.enter.prevent=\"typeAheadSelect\" @blur=\"open = false\" @focus=\"open = true\" type=\"search\" class=\"form-control\" :placeholder=\"searchPlaceholder\" :style=\"{ width: isValueEmpty ? '100%' : 'auto' }\" _v-20e12e00=\"\">\n\n      <i v-el:open-indicator=\"\" role=\"presentation\" class=\"open-indicator glyphicon-chevron-down glyphicon\" _v-20e12e00=\"\"></i>\n  </div>\n\n  <ul v-show=\"open\" v-el:dropdown-menu=\"\" :transition=\"transition\" :style=\"{ 'max-height': maxHeight }\" class=\"dropdown-menu animated\" _v-20e12e00=\"\">\n    <li v-for=\"option in filteredOptions\" :class=\"{ active: isOptionSelected(option), highlight: $index === typeAheadPointer }\" @mouseover=\"typeAheadPointer = $index\" _v-20e12e00=\"\">\n      <a @mousedown.prevent=\"select(option)\" _v-20e12e00=\"\">\n        {{ getOptionLabel(option) }}\n      </a>\n    </li>\n    <li transition=\"fade\" v-if=\"!filteredOptions.length\" class=\"divider\" _v-20e12e00=\"\"></li>\n    <li transition=\"fade\" v-if=\"!filteredOptions.length\" class=\"text-center\" _v-20e12e00=\"\">Sorry, no matching options.</li>\n  </ul>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/meetgodhani/Desktop/Crowdlinker/laterpostv2/node_modules/vue-select/src/components/Select.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n.dropdown[_v-20e12e00] {\n  position: relative;\n}\n\n.open .dropdown-toggle[_v-20e12e00],\n.open .dropdown-menu[_v-20e12e00] {\n  border-color: rgba(60,60,60,.26);\n}\n\n.open-indicator[_v-20e12e00] {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  display: inline-block;\n  cursor: pointer;\n  pointer-events: all;\n  -webkit-transition: all 150ms cubic-bezier(1.000, -0.115, 0.975, 0.855);\n  transition: all 150ms cubic-bezier(1.000, -0.115, 0.975, 0.855);\n  -webkit-transition-timing-function: cubic-bezier(1.000, -0.115, 0.975, 0.855);\n          transition-timing-function: cubic-bezier(1.000, -0.115, 0.975, 0.855);\n}\n\n.open .open-indicator[_v-20e12e00] {\n  -webkit-transform: rotate(180deg);\n          transform: rotate(180deg);\n}\n\n.dropdown-toggle[_v-20e12e00] {\n  display: block;\n  padding: 0;\n  background: none;\n  border: 1px solid rgba(60,60,60,.26);\n  border-radius: 4px;\n  white-space: normal;\n}\n.searchable .dropdown-toggle[_v-20e12e00] {\n  cursor: text;\n}\n\n.open .dropdown-toggle[_v-20e12e00] {\n  border-bottom: none;\n  border-bottom-left-radius: 0;\n  border-bottom-right-radius: 0;\n}\n\n.dropdown-menu[_v-20e12e00] {\n  margin: 0;\n  width: 100%;\n  overflow-y: scroll;\n  border-top: none;\n  border-top-left-radius: 0;\n  border-top-right-radius: 0;\n}\n\n.selected-tag[_v-20e12e00] {\n  color: #333;\n  background-color: #f0f0f0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  height: 26px;\n  margin: 4px 1px 0px 3px;\n  padding: 0 0.25em;\n  float: left;\n  line-height: 1.7em;\n}\n\n.selected-tag .close[_v-20e12e00] {\n  float: none;\n  margin-right: 0;\n  font-size: 20px;\n}\n\ninput[type=search][_v-20e12e00],\ninput[type=search][_v-20e12e00]:focus {\n  display: inline-block;\n  border: none;\n  outline: none;\n  margin: 0;\n  padding: 0 .5em;\n  width: 10em;\n  max-width: 100%;\n  background: none;\n  position: relative;\n  box-shadow: none;\n  float: left;\n  clear: none;\n}\n\ninput[type=search][_v-20e12e00]:disabled {\n  cursor: pointer;\n}\n\nli a[_v-20e12e00] {\n  cursor: pointer;\n}\n\n.active a[_v-20e12e00] {\n  background: rgba(50,50,50,.1);\n  color: #333;\n}\n\n.highlight a[_v-20e12e00],\nli:hover > a[_v-20e12e00] {\n  background: #f0f0f0;\n  color: #333;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"babel-runtime/core-js/object/keys":2,"babel-runtime/helpers/typeof":4,"vue":73,"vue-hot-reload-api":46,"vueify-insert-css":74}],73:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.18
@@ -31528,7 +32463,27 @@ if (config.devtools) {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":9}],37:[function(require,module,exports){
+},{"_process":45}],74:[function(require,module,exports){
+var inserted = exports.cache = {}
+
+exports.insert = function (css) {
+  if (inserted[css]) return
+  inserted[css] = true
+
+  var elem = document.createElement('style')
+  elem.setAttribute('type', 'text/css')
+
+  if ('textContent' in elem) {
+    elem.textContent = css
+  } else {
+    elem.styleSheet.cssText = css
+  }
+
+  document.getElementsByTagName('head')[0].appendChild(elem)
+  return elem
+}
+
+},{}],75:[function(require,module,exports){
 /*!
  * Vuex v0.6.2
  * (c) 2016 Evan You
@@ -32105,7 +33060,7 @@ module.exports = Vue;
   return index;
 
 }));
-},{}],38:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32162,7 +33117,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./vuex/actions":53,"./vuex/store":54,"vue":36,"vue-hot-reload-api":10}],39:[function(require,module,exports){
+},{"./vuex/actions":91,"./vuex/store":92,"vue":73,"vue-hot-reload-api":46}],77:[function(require,module,exports){
 'use strict';
 
 var _vue = require('vue');
@@ -32195,7 +33150,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vueRouter2.default);
-
+_vue2.default.config.dev = false;
 _vue2.default.http.options.root = '/api';
 _vue2.default.http.interceptors.push(_interceptor2.default);
 
@@ -32210,7 +33165,7 @@ var router = new _vueRouter2.default({
 
 router.start(_App2.default, '#app');
 
-},{"./App.vue":38,"./components/register":43,"./interceptor.js":50,"./router-config":51,"vue":36,"vue-resource":24,"vue-router":35}],40:[function(require,module,exports){
+},{"./App.vue":76,"./components/register":81,"./interceptor.js":88,"./router-config":89,"vue":73,"vue-resource":60,"vue-router":71}],78:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32241,7 +33196,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],41:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32269,7 +33224,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],42:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],80:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32297,7 +33252,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],43:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],81:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32320,6 +33275,10 @@ var _DateTime = require('./partials/DateTime.vue');
 
 var _DateTime2 = _interopRequireDefault(_DateTime);
 
+var _vueSelect = require('vue-select');
+
+var _vueSelect2 = _interopRequireDefault(_vueSelect);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -32327,10 +33286,11 @@ exports.default = {
     _vue2.default.component('navbar', _navbar2.default);
     _vue2.default.component('v-modal', _modal2.default);
     _vue2.default.component('v-timepicker', _DateTime2.default);
+    _vue2.default.component('v-select', _vueSelect2.default);
   }
 };
 
-},{"./partials/DateTime.vue":40,"./partials/modal.vue":41,"./partials/navbar.vue":42,"vue":36}],44:[function(require,module,exports){
+},{"./partials/DateTime.vue":78,"./partials/modal.vue":79,"./partials/navbar.vue":80,"vue":73,"vue-select":72}],82:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32404,6 +33364,10 @@ exports.default = {
       return this.accounts;
     }
   },
+  ready: function ready() {
+    this.$dispatch("saveUserDetails");
+  },
+
   methods: {
     getCount: function getCount(textlength) {
       return 140 - textlength;
@@ -32423,21 +33387,26 @@ exports.default = {
     },
     schedulePost: function schedulePost() {
       var self = this;
-      var data = new FormData();
-      data.append('image', this.files);
-      data.append('accounts', (0, _stringify2.default)(this.allAccounts));
-      data.append('content', this.tweet);
-      data.append('scheduled_at', this.datetimeselect);
-      data.append('timezone', this.getTimezone);
-      this.$http.post('posts', data).then(function (response) {
-        UIkit.notify('Successfully scheduled post');
-        this.files = null;
-        this.image = null;
-        this.tweet = null;
+      if (this.tweet !== null) {
+        var data = new FormData();
+        data.append('image', this.files);
+        data.append('accounts', (0, _stringify2.default)(this.allAccounts));
+        data.append('content', this.tweet);
+        data.append('scheduled_at', this.datetimeselect);
+        data.append('timezone', this.getTimezone);
+        this.$http.post('posts', data).then(function (response) {
+          UIkit.notify('Successfully scheduled post');
+          this.files = null;
+          this.image = null;
+          this.tweet = '';
+          this.showModal = false;
+          this.datetimeselect = null;
+          self.addPost(response.data.data);
+        });
+      } else {
+        UIkit.notify('Oops something went wrong');
         this.showModal = false;
-        this.datetimeselect = null;
-        self.addPost(response.data.data);
-      });
+      }
     },
     removeImage: function removeImage() {
       this.image = null;
@@ -32474,7 +33443,7 @@ exports.default = {
       data.append('content', this.tweet);
       this.$http.post('tweet', data).then(function (response) {
         UIkit.notify('Successfully posted');
-        this.files = null, this.image = null, this.tweet = null;
+        this.files = null, this.image = null, this.tweet = '';
       });
     },
     deletePost: function deletePost(id) {
@@ -32499,7 +33468,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../../vuex/actions":53,"babel-runtime/core-js/json/stringify":1,"lodash":4,"moment-timezone":6,"vue":36,"vue-hot-reload-api":10}],45:[function(require,module,exports){
+},{"../../vuex/actions":91,"babel-runtime/core-js/json/stringify":1,"lodash":40,"moment-timezone":42,"vue":73,"vue-hot-reload-api":46}],83:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32510,9 +33479,6 @@ exports.default = {
     canReuse: function canReuse(transition) {
       return false;
     }
-  },
-  ready: function ready() {
-    this.$dispatch("saveUserDetails");
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -32528,8 +33494,67 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],46:[function(require,module,exports){
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n"
+},{"vue":73,"vue-hot-reload-api":46}],84:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  vuex: {
+    getters: {
+      email: function email(state) {
+        return state.email;
+      },
+      accounts: function accounts(state) {
+        return state.accounts;
+      },
+      current_timezone: function current_timezone(state) {
+        return state.timezone;
+      }
+    }
+  },
+  data: function data() {
+    return {
+      timezonelist: null,
+      new_timezone: null
+    };
+  },
+  ready: function ready() {
+    this.$dispatch("saveUserDetails");
+    this.getTimezones();
+  },
+
+  methods: {
+    getTimezones: function getTimezones() {
+      var self = this;
+      // Get timezones
+      this.$http.get('timezones').then(function (response) {
+        self.timezonelist = response.data;
+      });
+    },
+    updateTimezone: function updateTimezone(timezone) {
+      var self = this;
+      this.$http.patch('timezone', { timezone: timezone }).then(function (response) {
+        self.getUser();
+      });
+    },
+    updateEmail: function updateEmail(email) {
+      var self = this;
+      this.$http.patch('email', { email: email }).then(function (response) {
+        self.getUser();
+      });
+    },
+    deleteAccount: function deleteAccount() {
+      var self = this;
+      this.$http.delete('users').then(function (response) {
+        self.$dispatch('clearUserDetails');
+      });
+    }
+  }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <div class=\"settings\">\n    <h2><strong>Settings</strong></h2>\n    <br>\n    <br>\n    <div class=\"composer col-xs-12\">\n      <h3><strong>Timezone</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <p> Your current timezone is <strong>{{ current_timezone }}</strong> </p>\n          <br>\n          <v-select :value.sync=\"new_timezone\" :options=\"timezonelist\"></v-select>\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"updateTimezone(current_timezone)\">Update timezone</button>\n      <br>\n      <br>\n      <h3><strong>Email</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <p> Your current email is <strong>{{ email }}</strong> </p>\n          <br>\n          <input type=\"email\" class=\"form-control\" v-model=\"newemail\" placeholder=\"New Email\">\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"updateEmail(newemail)\">Update email</button>\n      <br>\n      <br>\n      <h3><strong>Change password</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <form>\n            <div class=\"form-group\">\n              <input type=\"password\" v-model=\"currentpassword\" placeholder=\"Current password\" class=\"form-control\">\n            </div>\n            <div class=\"form-group\">\n              <input type=\"password\" v-model=\"newpassword\" placeholder=\"New password\" class=\"form-control\">\n            </div>\n          </form>\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"changePassword()\">Change Password</button>\n      <br>\n      <br>\n      <h3><strong> Connected accounts</strong></h3>\n      <br>\n      <div class=\"account-list-item\" v-for=\"account in accounts\" v-if=\"accounts.length > 0\">\n        <div class=\"row\">\n          <div class=\"col-xs-6\">\n            <p class=\"pull-left\"><img :src=\"account.avatar\" class=\"img-responsive\" width=\"60\"></p>\n            <p>Twitter<br>{{ account.username }}</p>\n          </div>\n          <div class=\"col-xs-6\">\n            <button type=\"button\" class=\"btn btn-danger btn-outline\" @click=\"disconnect(account)\">Disconnect</button>\n          </div>\n        </div>\n      </div>\n      <p v-if=\"accounts.length === 0\">No accounts connected</p>\n      <br>\n      <br>\n      <h3><strong> Delete Account</strong></h3>\n      <div class=\"col-xs-6 deleteaccount\">\n        <div class=\"row\">\n          <div class=\"checkbox\">\n            <label>\n              <input type=\"checkbox\" v-model=\"deleteaccount\"> Yes I want to delete my account and all of my data.\n            </label>\n          </div><br>\n          <button type=\"button\" class=\"btn btn-danger\" v-bind:disabled=\"!deleteaccount\" @click=\"deleteAccount\">Delete Account</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -32541,7 +33566,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],47:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],85:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32567,7 +33592,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],48:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32614,7 +33639,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],49:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],87:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32658,7 +33683,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":36,"vue-hot-reload-api":10}],50:[function(require,module,exports){
+},{"vue":73,"vue-hot-reload-api":46}],88:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32688,7 +33713,6 @@ exports.default = function () {
       if (_response.data.message === 'The token has been blacklisted' && _response.status === 500) {
         console.log("Unauthorized");
         localStorage.removeItem('token');
-        console.log(_vue2.default);
         return this.$route.router.go('/auth/login');
       }
 
@@ -32713,7 +33737,7 @@ var _vue2 = _interopRequireDefault(_vue);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./unauthorized":52,"vue":36}],51:[function(require,module,exports){
+},{"./unauthorized":90,"vue":73}],89:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32792,7 +33816,7 @@ function configRouter(router) {
   });
 }
 
-},{"./components/views/Compose.vue":44,"./components/views/Dashboard.vue":45,"./components/views/Settings.vue":46,"./components/views/auth/index.vue":47,"./components/views/auth/login.vue":48,"./components/views/auth/register.vue":49}],52:[function(require,module,exports){
+},{"./components/views/Compose.vue":82,"./components/views/Dashboard.vue":83,"./components/views/Settings.vue":84,"./components/views/auth/index.vue":85,"./components/views/auth/login.vue":86,"./components/views/auth/register.vue":87}],90:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32823,7 +33847,7 @@ exports.default = {
   }
 };
 
-},{"vue":36}],53:[function(require,module,exports){
+},{"vue":73}],91:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32845,7 +33869,7 @@ function makeAction(type) {
   };
 }
 
-},{}],54:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32873,7 +33897,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _vue2.default.use(_vuex2.default);
 
 var state = {
-  user: {},
+  email: null,
   accounts: [],
   timezone: null,
   link: null
@@ -32881,9 +33905,7 @@ var state = {
 
 var mutations = {
   SAVE_USER: function SAVE_USER(state, data) {
-    state.user.id = data.id;
-    state.user.name = data.name;
-    state.user.email = data.email;
+    state.email = data.email;
     state.timezone = data.timezone;
     state.accounts = data.accounts.data.map(function (obj, key) {
       if (key === 0) {
@@ -32924,6 +33946,6 @@ exports.default = new _vuex2.default.Store({
   mutations: mutations
 });
 
-},{"lodash":4,"moment-timezone":6,"vue":36,"vuex":37}]},{},[39]);
+},{"lodash":40,"moment-timezone":42,"vue":73,"vuex":75}]},{},[77]);
 
 //# sourceMappingURL=app.js.map

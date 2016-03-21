@@ -6581,4 +6581,23 @@ span.post-time {
 .options:hover {
   opacity: 1; }
 
+.settings .composer {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-bottom: 50px; }
+
+.settings .deleteaccount {
+  font-size: 16px; }
+
+.account-list-item img {
+  margin-right: 10px; }
+
+.account-list-item p {
+  font-family: 'Lato', sans-serif;
+  color: #777;
+  margin-top: 5px; }
+
+.account-list-item .btn {
+  margin-top: 10px; }
+
 /*# sourceMappingURL=app.css.map */
