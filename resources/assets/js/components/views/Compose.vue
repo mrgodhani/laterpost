@@ -25,7 +25,7 @@
     </div>
   </div>
   <a href='{{ link }}' class="connect-accounts">Connect Account</a>
-  <div class="countdown" v-if="tweet">{{ getCount(tweet.length) }}</div>
+  <div class="countdown" v-if="tweet">{{ tweetcount }}</div>
   <br/>
   <textarea class="form-control" rows="5" v-model="tweet" placeholder="Write your post here"></textarea>
   <div class="row" v-if="image">
@@ -38,15 +38,15 @@
   <div class="form-actions col-xs-12">
     <div class="pull-left">
       <span id="fileselector">
-        <label class="btn btn-default" for="upload-file-selector" v-bind:disabled="getCount(tweet.length) < 0">
+        <label class="btn btn-default" for="upload-file-selector" v-bind:disabled="tweetcount < 0">
           <input id="upload-file-selector" type="file" accept="image/gif,image/jpeg,image/png" @change="onFileChange">
           <i class="fa fa-camera"></i>
         </label>
       </span>
     </div>
     <div class="pull-right">
-      <button type="button" class="btn btn-default" v-bind:disabled="getCount(tweet.length) < 0 || tweet.length === 0" @click="postNow"><i class="fa fa-fw fa-paper-plane"></i> Post now</button>
-      <button type="button" class="btn btn-primary" v-bind:disabled="getCount(tweet.length) < 0 || tweet.length === 0" @click="showModal = true"><i class="fa fa-fw fa-calendar"></i> Schedule post</button>
+      <button type="button" class="btn btn-default" v-bind:disabled="tweetcount < 0 || tweet.length === 0" @click="postNow"><i class="fa fa-fw fa-paper-plane"></i> Post now</button>
+      <button type="button" class="btn btn-primary" v-bind:disabled="tweetcount < 0 || tweet.length === 0" @click="showModal = true"><i class="fa fa-fw fa-calendar"></i> Schedule post</button>
     </div>
   </div>
 </div>
@@ -97,6 +97,7 @@
 import _ from 'lodash'
 import moment from 'moment-timezone'
 import { addPost,deletePostItem } from '../../vuex/actions'
+import getUrl from 'get-urls'
 
 export default {
   vuex: {
@@ -116,6 +117,7 @@ export default {
       image: null,
       files: null,
       showModal: false,
+      tweetcount: null,
       datetimeselect: null
     }
   },
@@ -141,9 +143,25 @@ export default {
   ready(){
     this.$dispatch("saveUserDetails");
   },
+  watch: {
+    'tweet' : 'getCount'
+  },
   methods: {
-    getCount(textlength){
-      return 140 - textlength
+    getCount(){
+      var m
+      var content
+      var re = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/ig;
+      var urls = this.tweet.match(re);
+      if(urls !== null && urls.length > 0){
+        content = this.tweet.replace(re,"")
+      } else {
+        content = this.tweet
+      }
+      if(urls !== null && urls.length > 0){
+        this.tweetcount = (140 - (23 * urls.length)) - content.length
+      } else {
+        this.tweetcount = (140  - content.length)
+      }
     },
     markSelected(data){
       data.selected = !data.selected;
