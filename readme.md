@@ -83,9 +83,9 @@ stdout_logfile=/home/forge/app.com/worker.log
 
 Linkedin apparently cannot be integrated because of limitation of API availability.
 
-## Demo
+## Demo and Live application
 
-![img](./images/rssreaderdemo.gif)
+[https://laterpost.io](https://laterpost.io)
 
 ## Support / Contribution
 
