@@ -28,7 +28,7 @@
               </form>
               <br/>
               <p class="text-muted">Don't have an account ? <a v-link="'/auth/register'">Register</a></p>
-              <p class="text-muted">Forgot password ?</p>
+              <!-- <p class="text-muted">Forgot password ?</p> -->
             </div>
           </div>
         </div>
