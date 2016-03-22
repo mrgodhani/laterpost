@@ -20,7 +20,7 @@ export default {
       this.saveUser()
     },
     clearUserDetails(){
-      this.clearUser()
+      this.clearUserData()
     }
   },
   methods: {
@@ -31,7 +31,7 @@ export default {
           self.saveUserDetail(response.data.data)
       });
     },
-    clearUser(){
+    clearUserData(){
       localStorage.removeItem('token')
       this.clearUser()
     }
