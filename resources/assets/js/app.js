@@ -8,7 +8,7 @@ import Interceptor from './interceptor.js'
 
 Vue.use(VueResource)
 Vue.use(VueRouter)
-Vue.config.dev = false;
+Vue.config.debug = false;
 Vue.http.options.root = '/api';
 Vue.http.interceptors.push(Interceptor)
 
