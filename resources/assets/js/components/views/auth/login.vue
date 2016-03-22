@@ -7,6 +7,8 @@
               <h1><i class="fa fa-fw fa-paper-plane-o"></i> Laterpost</h1>
               <br/>
               <p class="text-muted small-text">Platform for scheduling twitter status updates</p>
+              <br/>
+              <p class="text-muted small-text"><i class="fa fa-github"></i><a href='https://github.com/mrgodhani/laterpost' target="_blank">View it on github</a></p>
             </div>
             <div class="col-xs-4">
               <p><strong>Login with your account</strong></p>
