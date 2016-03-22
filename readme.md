@@ -75,11 +75,12 @@ stdout_logfile=/home/forge/app.com/worker.log
 - [x] Multi account for twitter
 - [x] Email and password login
 - [x] Scheduling twitter status updates to multiple account
-- [x] Managing connected social media accounts
+- [x] Managing connected social media accounts and other account settings (i.e password change, timezone change and email update)
 - [x] Sending twitter update with image (Currently supports 1 image upload only)
 - [ ] Multi image upload
 - [ ] Slack integration to notify user when all pending scheduled queues are empty.
 - [ ] Integrating Facebook
+- [ ] Editing scheduled tweets
 
 Linkedin apparently cannot be integrated because of limitation of API availability.
 
