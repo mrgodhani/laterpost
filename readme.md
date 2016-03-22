@@ -24,7 +24,7 @@ npm install
 gulp --production
 ```
 
-### Step 4: Run Gulp
+### Step 4: Configure environment variables
 Configure environment variables and add keys for Twitter. Just copy .env.example file by executing command cp .env.example .env . In my case I used Amazon S3 for temporary storing uploaded images. But please free feel to use any driver you want.
 
 ```
