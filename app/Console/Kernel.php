@@ -27,6 +27,6 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('runtweets')->everyMinute()->appendOutputTo('runtweetcron.txt');
+        $schedule->command('runtweets')->everyMinute();
     }
 }
