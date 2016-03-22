@@ -88,6 +88,8 @@ Linkedin apparently cannot be integrated because of limitation of API availabili
 
 [https://laterpost.io](https://laterpost.io)
 
+![img](./laterpost.gif)
+
 ## Support / Contribution
 
 Please feel free to give suggestion or report bug by [creating issue](https://github.com/mrgodhani/rss-reader/issues) or letting me know on twitter [@mrgodhani](https://twitter.com/mrgodhani).
