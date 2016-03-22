@@ -77,6 +77,7 @@ stdout_logfile=/home/forge/app.com/worker.log
 - [x] Scheduling twitter status updates to multiple account
 - [x] Managing connected social media accounts and other account settings (i.e password change, timezone change and email update)
 - [x] Sending twitter update with image (Currently supports 1 image upload only)
+- [x] Character counting similar to twitter
 - [ ] Multi image upload
 - [ ] Slack integration to notify user when all pending scheduled queues are empty.
 - [ ] Integrating Facebook
