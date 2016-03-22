@@ -15,7 +15,7 @@
           </div>
         </div>
         <br/>
-        <button type="button" class="btn btn-default" @click="updateTimezone(current_timezone)">Update timezone</button>
+        <button type="button" class="btn btn-default" @click="updateUserTimezone(new_timezone)">Update timezone</button>
         <br/>
         <br/>
         <h3><strong>Email</strong></h3>
@@ -28,7 +28,7 @@
           </div>
         </div>
         <br/>
-        <button type="button" class="btn btn-default" @click="updateEmail(newemail)">Update email</button>
+        <button type="button" class="btn btn-default" @click="updateUserEmail(newemail)">Update email</button>
         <br/>
         <br/>
         <h3><strong>Change password</strong></h3>
@@ -37,16 +37,16 @@
           <div class="col-xs-4">
             <form>
               <div class="form-group">
-                <input type="password" v-model="currentpassword" placeholder="Current password" class="form-control">
+                <input type="password" v-model="newpassword" placeholder="New password" class="form-control">
               </div>
               <div class="form-group">
-                <input type="password" v-model="newpassword" placeholder="New password" class="form-control">
+                <input type="password" v-model="password_confirmation" placeholder="Confirm password" class="form-control">
               </div>
             </form>
           </div>
         </div>
         <br/>
-        <button type="button" class="btn btn-default" @click="changePassword()">Change Password</button>
+        <button type="button" class="btn btn-default" @click="changePassword">Change Password</button>
         <br/>
         <br/>
         <h3><strong> Connected accounts</strong></h3>
@@ -58,7 +58,7 @@
               <p>Twitter<br/>{{ account.username }}</p>
             </div>
             <div class="col-xs-6">
-              <button type="button" class="btn btn-danger btn-outline" @click="disconnect(account)">Disconnect</button>
+              <button type="button" class="btn btn-danger btn-outline" @click="disconnect(account.id)">Disconnect</button>
             </div>
           </div>
         </div>
@@ -81,18 +81,29 @@
   </div>
 </template>
 <script>
+import { deleteTwitterAccount,updateTimezone,updateEmail } from '../../vuex/actions'
+
 export default {
   vuex:{
     getters: {
       email: state => state.email,
       accounts: state => state.accounts,
       current_timezone: state => state.timezone
+    },
+    actions: {
+      deleteTwitterAccount,
+      updateTimezone,
+      updateEmail
     }
   },
   data(){
     return {
       timezonelist : null,
-      new_timezone: null
+      new_timezone: null,
+      deleteaccount: null,
+      newemail: null,
+      password_confirmation: null,
+      newpassword: null
     }
   },
   ready(){
@@ -108,23 +119,46 @@ export default {
         self.timezonelist = response.data
       })
     },
-    updateTimezone(timezone){
+    updateUserTimezone(timezone){
       var self = this;
-      this.$http.patch('timezone',{timezone : timezone }).then(function(response){
-        self.getUser();
-      })
+      if(timezone !== null) {
+        this.$http.patch('timezone',{timezone : timezone }).then(function(response){
+          self.updateTimezone(timezone)
+        })
+      } else {
+        UIkit.notify('Please select timezone');
+      }
     },
-    updateEmail(email)
+    updateUserEmail(email)
     {
       var self = this;
-      this.$http.patch('email',{email : email}).then(function(response){
-        self.getUser();
+      if(email !== null) {
+        this.$http.patch('email',{email : email}).then(function(response){
+          self.updateEmail(email);
+        })
+      } else {
+        UIkit.notify('Email is required');
+      }
+    },
+    disconnect(id){
+      var self = this
+      this.$http.delete('accounts/' + id).then(function(response){
+        self.deleteTwitterAccount(id)
       })
     },
     deleteAccount(){
       var self = this;
       this.$http.delete('users').then(function(response){
-        self.$dispatch('clearUserDetails');
+        self.$dispatch('clearUserDetails')
+        self.$route.router.go('/auth/login')
+      })
+    },
+    changePassword(){
+      var self = this;
+      this.$http.patch('password',{ password: this.newpassword,password_confirmation: this.password_confirmation}).then(function(response){
+        UIkit.notify('Password updated Successfully');
+      },function(response){
+        UIkit.notify(response.data.errors.password[0]);
       })
     }
   }

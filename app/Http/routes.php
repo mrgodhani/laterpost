@@ -35,7 +35,12 @@ $api->version('v1', function ($api) {
     $api->get('refresh','LaterPost\Api\AuthController@refresh');
     $api->group(['middleware' => 'api.auth'],function($api){
         $api->get('users/current','LaterPost\Api\UserController@index');
+        $api->delete('users','LaterPost\Api\UserController@destroy');
         $api->get('timezones','LaterPost\Api\UserController@timezone');
+        $api->patch('timezone','LaterPost\Api\UserController@updateTimezone');
+        $api->patch('password','LaterPost\Api\UserController@updatePassword');
+        $api->patch('email','LaterPost\Api\UserController@updateEmail');
+        $api->delete('accounts/{id}','LaterPost\Api\AccountController@deleteAccount');
         $api->post('posts','LaterPost\Api\PostController@store');
         $api->post('tweet','LaterPost\Api\PostController@tweet');
         $api->patch('posts','LaterPost\Api\PostController@update');

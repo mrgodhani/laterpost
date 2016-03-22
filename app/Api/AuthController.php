@@ -53,7 +53,11 @@ class AuthController extends BaseController
      */
     public function twitter_callback(Request $request){
         $user = Socialite::driver('twitter')->user();
-        $this->accountService->create($user,$request->session()->get('uid'));
+        if($this->accountService->checkAccount($user->id)){
+            $this->accountService->updateAccount($user,$request->session()->get('uid'));
+        } else {
+            $this->accountService->create($user,$request->session()->get('uid'));
+        }
         $request->session()->forget('uid');
         return redirect('/');
     }
@@ -93,7 +97,7 @@ class AuthController extends BaseController
             throw new StoreResourceFailedException('Missing fields.',$validation->errors());
         }
         if(!$token = Auth::attempt($request->only('email','password'))){
-            throw new UnauthorizedHttpException("Email or password isi invalid");
+            throw new UnauthorizedHttpException("Email or password is invalid");
         }
         return (new Response(compact('token'),200))->header('Content-Type','application/json');
     }

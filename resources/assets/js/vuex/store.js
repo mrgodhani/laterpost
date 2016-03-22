@@ -51,6 +51,19 @@ const mutations = {
       state.accounts[index].posts.data.splice(post_index,1)
     })
   },
+  DELETE_TWITTER_ACCOUNT (state,id)
+  {
+    var index = _.findIndex(state.accounts,{ 'id' : id})
+    state.accounts.splice(index,1)
+  },
+  UPDATE_EMAIL(state,email)
+  {
+    state.email = email
+  },
+  UPDATE_TIMEZONE(state,timezone)
+  {
+    state.timezone = timezone
+  },
   CLEAR_USER(state){
     state.user = {},
     state.accounts = []

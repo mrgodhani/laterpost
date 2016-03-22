@@ -49,16 +49,15 @@ export default {
  methods: {
    login(){
      var self = this;
-
      this.$http.post('login',this.user)
      .then(function(response){
        localStorage.setItem('token',response.data.token)
        return self.$route.router.go('/')
      },function(response){
        if(response.status === 401){
-         this.errors = "Email or password is invalid"
+         self.errors = "Email or password is invalid"
        } else {
-         this.errors = response.data.errors
+         self.errors = response.data.errors
        }
      })
    }

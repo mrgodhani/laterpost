@@ -35205,6 +35205,7 @@ exports.default = {
     }
   },
   ready: function ready() {
+    $('[data-toggle="tooltip"]').tooltip();
     this.$dispatch("saveUserDetails");
   },
 
@@ -35312,7 +35313,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div>\n    <v-modal :show.sync=\"showModal\">\n      <div slot=\"body\">\n        <v-timepicker name=\"datetime\" :model.sync=\"datetimeselect\" placeholder=\"Choose Date &amp; Time\"></v-timepicker>\n        <br>\n        <p name=\"timezone\"><strong>Timezone</strong> : {{ timezone }}</p>\n      </div>\n      <div slot=\"footer\">\n        <button class=\"btn btn-default\" @click=\"showModal = false\">\n        Cancel\n      </button>\n      <button class=\"btn btn-primary\" @click=\"schedulePost()\">\n      Schedule\n    </button>\n  </div>\n</v-modal>\n<div class=\"composer col-xs-12\">\n  <div id=\"profiles\">\n    <div class=\"profile avatar twitter\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.compose_profile }\" @click=\"markSelected(account)\">\n      <img :src=\"account.avatar\" width=\"44\">\n      <span></span>\n    </div>\n  </div>\n  <a href=\"{{ link }}\" class=\"connect-accounts\">Connect Account</a>\n  <div class=\"countdown\" v-if=\"tweet\">{{ tweetcount }}</div>\n  <br>\n  <textarea class=\"form-control\" rows=\"5\" v-model=\"tweet\" placeholder=\"Write your post here\"></textarea>\n  <div class=\"row\" v-if=\"image\">\n    <div class=\"col-xs-3\">\n      <a href=\"#\" class=\"thumbnail\" @click=\"removeImage\">\n        <img :src=\"image\">\n      </a>\n    </div>\n  </div>\n  <div class=\"form-actions col-xs-12\">\n    <div class=\"pull-left\">\n      <span id=\"fileselector\">\n        <label class=\"btn btn-default\" for=\"upload-file-selector\" v-bind:disabled=\"tweetcount < 0\">\n          <input id=\"upload-file-selector\" type=\"file\" accept=\"image/gif,image/jpeg,image/png\" @change=\"onFileChange\">\n          <i class=\"fa fa-camera\"></i>\n        </label>\n      </span>\n    </div>\n    <div class=\"pull-right\">\n      <button type=\"button\" class=\"btn btn-default\" v-bind:disabled=\"tweetcount < 0 || tweet.length === 0\" @click=\"postNow\"><i class=\"fa fa-fw fa-paper-plane\"></i> Post now</button>\n      <button type=\"button\" class=\"btn btn-primary\" v-bind:disabled=\"tweetcount < 0 || tweet.length === 0\" @click=\"showModal = true\"><i class=\"fa fa-fw fa-calendar\"></i> Schedule post</button>\n    </div>\n  </div>\n</div>\n<div class=\"posts\" v-if=\"accounts.length > 0\">\n  <br>\n  <h3><strong>Pending posts</strong></h3>\n  <br>\n  <div class=\"tabs-wrapper\">\n    <ul class=\"tabs clearfix\">\n      <li class=\"tab\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.tab_profile }\" @click=\"selectTab(account)\">\n        <span class=\"profile avatar twitter\">\n          <img :src=\"account.avatar\">\n          <span class=\"small\"></span>\n        </span>\n        <span class=\"tab-meta\">\n          <span class=\"tab-username\">{{ account.username }}</span>\n          <span class=\"tab-updates\">{{ account.posts.data.length }} posts</span>\n        </span></li>\n      </ul>\n      <div class=\"composer tab-inner\">\n        <div class=\"empty-timeline\" v-if=\"selectedTabPost.length === 0\">\n          <p class=\"text-center\">No pending posts available. </p>\n        </div>\n        <ul class=\"timeline list-unstyled\" v-if=\"selectedTabPost.length > 0\">\n          <li class=\"post\" v-for=\"postdata in selectedTabPost\">\n            <span class=\"post-time\">\n              {{ postdata.scheduled_at }}\n            </span>\n            <div class=\"update-body\">\n              {{ postdata.content }}\n            </div>\n            <div class=\"options\">\n              <div class=\"btn-group\" role=\"group\">\n                <button type=\"button\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Edit\"><i class=\"fa fa-pencil\"></i></button>\n                <button type=\"button\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Post now\"><i class=\"fa fa-paper-plane\"></i></button>\n                <button type=\"button\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Delete\" @click=\"deletePost(postdata.id)\"><i class=\"fa fa-times\"></i></button>\n              </div>\n            </div>\n          </li></ul></div>\n        \n      \n    </div>\n  </div>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div>\n    <v-modal :show.sync=\"showModal\">\n      <div slot=\"body\">\n        <v-timepicker name=\"datetime\" :model.sync=\"datetimeselect\" placeholder=\"Choose Date &amp; Time\"></v-timepicker>\n        <br>\n        <p name=\"timezone\"><strong>Timezone</strong> : {{ timezone }}</p>\n      </div>\n      <div slot=\"footer\">\n        <button class=\"btn btn-default\" @click=\"showModal = false\">\n        Cancel\n      </button>\n      <button class=\"btn btn-primary\" @click=\"schedulePost()\">\n      Schedule\n    </button>\n  </div>\n</v-modal>\n<div class=\"composer col-xs-12\">\n  <div id=\"profiles\">\n    <div class=\"profile avatar twitter\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.compose_profile }\" @click=\"markSelected(account)\">\n      <img :src=\"account.avatar\" width=\"44\">\n      <span></span>\n    </div>\n  </div>\n  <a href=\"{{ link }}\" class=\"connect-accounts\">Connect Account</a>\n  <div class=\"countdown\" v-if=\"tweet\">{{ tweetcount }}</div>\n  <br>\n  <textarea class=\"form-control\" rows=\"5\" v-model=\"tweet\" placeholder=\"Write your post here\"></textarea>\n  <div class=\"row\" v-if=\"image\">\n    <div class=\"col-xs-3\">\n      <a href=\"#\" class=\"thumbnail\" @click=\"removeImage\">\n        <img :src=\"image\">\n      </a>\n    </div>\n  </div>\n  <div class=\"form-actions col-xs-12\">\n    <div class=\"pull-left\">\n      <span id=\"fileselector\">\n        <label class=\"btn btn-default\" for=\"upload-file-selector\" v-bind:disabled=\"tweetcount < 0\">\n          <input id=\"upload-file-selector\" type=\"file\" accept=\"image/gif,image/jpeg,image/png\" @change=\"onFileChange\">\n          <i class=\"fa fa-camera\"></i>\n        </label>\n      </span>\n    </div>\n    <div class=\"pull-right\">\n      <button type=\"button\" class=\"btn btn-default\" v-bind:disabled=\"tweetcount < 0 || tweet.length === 0\" @click=\"postNow\"><i class=\"fa fa-fw fa-paper-plane\"></i> Post now</button>\n      <button type=\"button\" class=\"btn btn-primary\" v-bind:disabled=\"tweetcount < 0 || tweet.length === 0\" @click=\"showModal = true\"><i class=\"fa fa-fw fa-calendar\"></i> Schedule post</button>\n    </div>\n  </div>\n</div>\n<div class=\"posts\" v-if=\"accounts.length > 0\">\n  <br>\n  <h3><strong>Pending posts</strong></h3>\n  <br>\n  <div class=\"tabs-wrapper\">\n    <ul class=\"tabs clearfix\">\n      <li class=\"tab\" v-for=\"account in accounts\" v-bind:class=\"{ 'selected' :  account.tab_profile }\" @click=\"selectTab(account)\">\n        <span class=\"profile avatar twitter\">\n          <img :src=\"account.avatar\">\n          <span class=\"small\"></span>\n        </span>\n        <span class=\"tab-meta\">\n          <span class=\"tab-username\">{{ account.username }}</span>\n          <span class=\"tab-updates\">{{ account.posts.data.length }} posts</span>\n        </span></li>\n      </ul>\n      <div class=\"composer tab-inner\">\n        <div class=\"empty-timeline\" v-if=\"selectedTabPost.length === 0\">\n          <p class=\"text-center\">No pending posts available. </p>\n        </div>\n        <ul class=\"timeline list-unstyled\" v-if=\"selectedTabPost.length > 0\">\n          <li class=\"post\" v-for=\"postdata in selectedTabPost\">\n            <span class=\"post-time\">\n              {{ postdata.scheduled_at }}\n            </span>\n            <div class=\"update-body\">\n              {{ postdata.content }}\n            </div>\n            <div class=\"options\">\n              <div class=\"btn-group\" role=\"group\">\n                <button type=\"button\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Edit\"><i class=\"fa fa-pencil\"></i></button>\n                <!-- <button type=\"button\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Post now\"><i class=\"fa fa-paper-plane\"></i></button> -->\n                <button type=\"button\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Delete\" @click=\"deletePost(postdata.id)\"><i class=\"fa fa-times\"></i></button>\n              </div>\n            </div>\n          </li></ul></div>\n        \n      \n    </div>\n  </div>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -35356,6 +35357,9 @@ if (module.hot) {(function () {  module.hot.accept()
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _actions = require('../../vuex/actions');
+
 exports.default = {
   vuex: {
     getters: {
@@ -35368,12 +35372,21 @@ exports.default = {
       current_timezone: function current_timezone(state) {
         return state.timezone;
       }
+    },
+    actions: {
+      deleteTwitterAccount: _actions.deleteTwitterAccount,
+      updateTimezone: _actions.updateTimezone,
+      updateEmail: _actions.updateEmail
     }
   },
   data: function data() {
     return {
       timezonelist: null,
-      new_timezone: null
+      new_timezone: null,
+      deleteaccount: null,
+      newemail: null,
+      password_confirmation: null,
+      newpassword: null
     };
   },
   ready: function ready() {
@@ -35389,28 +35402,51 @@ exports.default = {
         self.timezonelist = response.data;
       });
     },
-    updateTimezone: function updateTimezone(timezone) {
+    updateUserTimezone: function updateUserTimezone(timezone) {
       var self = this;
-      this.$http.patch('timezone', { timezone: timezone }).then(function (response) {
-        self.getUser();
-      });
+      if (timezone !== null) {
+        this.$http.patch('timezone', { timezone: timezone }).then(function (response) {
+          self.updateTimezone(timezone);
+        });
+      } else {
+        UIkit.notify('Please select timezone');
+      }
     },
-    updateEmail: function updateEmail(email) {
+    updateUserEmail: function updateUserEmail(email) {
       var self = this;
-      this.$http.patch('email', { email: email }).then(function (response) {
-        self.getUser();
+      if (email !== null) {
+        this.$http.patch('email', { email: email }).then(function (response) {
+          self.updateEmail(email);
+        });
+      } else {
+        UIkit.notify('Email is required');
+      }
+    },
+    disconnect: function disconnect(id) {
+      var self = this;
+      this.$http.delete('accounts/' + id).then(function (response) {
+        self.deleteTwitterAccount(id);
       });
     },
     deleteAccount: function deleteAccount() {
       var self = this;
       this.$http.delete('users').then(function (response) {
         self.$dispatch('clearUserDetails');
+        self.$route.router.go('/auth/login');
+      });
+    },
+    changePassword: function changePassword() {
+      var self = this;
+      this.$http.patch('password', { password: this.newpassword, password_confirmation: this.password_confirmation }).then(function (response) {
+        UIkit.notify('Password updated Successfully');
+      }, function (response) {
+        UIkit.notify(response.data.errors.password[0]);
       });
     }
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <div class=\"settings\">\n    <h2><strong>Settings</strong></h2>\n    <br>\n    <br>\n    <div class=\"composer col-xs-12\">\n      <h3><strong>Timezone</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <p> Your current timezone is <strong>{{ current_timezone }}</strong> </p>\n          <br>\n          <v-select :value.sync=\"new_timezone\" :options=\"timezonelist\"></v-select>\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"updateTimezone(current_timezone)\">Update timezone</button>\n      <br>\n      <br>\n      <h3><strong>Email</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <p> Your current email is <strong>{{ email }}</strong> </p>\n          <br>\n          <input type=\"email\" class=\"form-control\" v-model=\"newemail\" placeholder=\"New Email\">\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"updateEmail(newemail)\">Update email</button>\n      <br>\n      <br>\n      <h3><strong>Change password</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <form>\n            <div class=\"form-group\">\n              <input type=\"password\" v-model=\"currentpassword\" placeholder=\"Current password\" class=\"form-control\">\n            </div>\n            <div class=\"form-group\">\n              <input type=\"password\" v-model=\"newpassword\" placeholder=\"New password\" class=\"form-control\">\n            </div>\n          </form>\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"changePassword()\">Change Password</button>\n      <br>\n      <br>\n      <h3><strong> Connected accounts</strong></h3>\n      <br>\n      <div class=\"account-list-item\" v-for=\"account in accounts\" v-if=\"accounts.length > 0\">\n        <div class=\"row\">\n          <div class=\"col-xs-6\">\n            <p class=\"pull-left\"><img :src=\"account.avatar\" class=\"img-responsive\" width=\"60\"></p>\n            <p>Twitter<br>{{ account.username }}</p>\n          </div>\n          <div class=\"col-xs-6\">\n            <button type=\"button\" class=\"btn btn-danger btn-outline\" @click=\"disconnect(account)\">Disconnect</button>\n          </div>\n        </div>\n      </div>\n      <p v-if=\"accounts.length === 0\">No accounts connected</p>\n      <br>\n      <br>\n      <h3><strong> Delete Account</strong></h3>\n      <div class=\"col-xs-6 deleteaccount\">\n        <div class=\"row\">\n          <div class=\"checkbox\">\n            <label>\n              <input type=\"checkbox\" v-model=\"deleteaccount\"> Yes I want to delete my account and all of my data.\n            </label>\n          </div><br>\n          <button type=\"button\" class=\"btn btn-danger\" v-bind:disabled=\"!deleteaccount\" @click=\"deleteAccount\">Delete Account</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <div class=\"settings\">\n    <h2><strong>Settings</strong></h2>\n    <br>\n    <br>\n    <div class=\"composer col-xs-12\">\n      <h3><strong>Timezone</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <p> Your current timezone is <strong>{{ current_timezone }}</strong> </p>\n          <br>\n          <v-select :value.sync=\"new_timezone\" :options=\"timezonelist\"></v-select>\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"updateUserTimezone(new_timezone)\">Update timezone</button>\n      <br>\n      <br>\n      <h3><strong>Email</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <p> Your current email is <strong>{{ email }}</strong> </p>\n          <br>\n          <input type=\"email\" class=\"form-control\" v-model=\"newemail\" placeholder=\"New Email\">\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"updateUserEmail(newemail)\">Update email</button>\n      <br>\n      <br>\n      <h3><strong>Change password</strong></h3>\n      <br>\n      <div class=\"row\">\n        <div class=\"col-xs-4\">\n          <form>\n            <div class=\"form-group\">\n              <input type=\"password\" v-model=\"newpassword\" placeholder=\"New password\" class=\"form-control\">\n            </div>\n            <div class=\"form-group\">\n              <input type=\"password\" v-model=\"password_confirmation\" placeholder=\"Confirm password\" class=\"form-control\">\n            </div>\n          </form>\n        </div>\n      </div>\n      <br>\n      <button type=\"button\" class=\"btn btn-default\" @click=\"changePassword\">Change Password</button>\n      <br>\n      <br>\n      <h3><strong> Connected accounts</strong></h3>\n      <br>\n      <div class=\"account-list-item\" v-for=\"account in accounts\" v-if=\"accounts.length > 0\">\n        <div class=\"row\">\n          <div class=\"col-xs-6\">\n            <p class=\"pull-left\"><img :src=\"account.avatar\" class=\"img-responsive\" width=\"60\"></p>\n            <p>Twitter<br>{{ account.username }}</p>\n          </div>\n          <div class=\"col-xs-6\">\n            <button type=\"button\" class=\"btn btn-danger btn-outline\" @click=\"disconnect(account.id)\">Disconnect</button>\n          </div>\n        </div>\n      </div>\n      <p v-if=\"accounts.length === 0\">No accounts connected</p>\n      <br>\n      <br>\n      <h3><strong> Delete Account</strong></h3>\n      <div class=\"col-xs-6 deleteaccount\">\n        <div class=\"row\">\n          <div class=\"checkbox\">\n            <label>\n              <input type=\"checkbox\" v-model=\"deleteaccount\"> Yes I want to delete my account and all of my data.\n            </label>\n          </div><br>\n          <button type=\"button\" class=\"btn btn-danger\" v-bind:disabled=\"!deleteaccount\" @click=\"deleteAccount\">Delete Account</button>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -35422,7 +35458,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":89,"vue-hot-reload-api":62}],101:[function(require,module,exports){
+},{"../../vuex/actions":107,"vue":89,"vue-hot-reload-api":62}],101:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35468,15 +35504,14 @@ exports.default = {
   methods: {
     login: function login() {
       var self = this;
-
       this.$http.post('login', this.user).then(function (response) {
         localStorage.setItem('token', response.data.token);
         return self.$route.router.go('/');
       }, function (response) {
         if (response.status === 401) {
-          this.errors = "Email or password is invalid";
+          self.errors = "Email or password is invalid";
         } else {
-          this.errors = response.data.errors;
+          self.errors = response.data.errors;
         }
       });
     }
@@ -35561,18 +35596,12 @@ exports.default = function () {
       return _request;
     },
     response: function response(_response) {
-      if (_response.data.message === 'Token has expired' && _response.status === 401) {
+      if (_response.data.message === 'Token has expired') {
         console.log("Token Expired");
         return _unauthorized2.default.handle(_response);
       }
 
-      if (_response.data.message === 'The token has been blacklisted' && _response.status === 500) {
-        console.log("Unauthorized");
-        localStorage.removeItem('token');
-        return this.$route.router.go('/auth/login');
-      }
-
-      if (_response.data.message !== 'Token has expired' && _response.status === 401) {
+      if (_response.data.message === 'The token has been blacklisted') {
         console.log("Unauthorized");
         localStorage.removeItem('token');
         return this.$route.router.go('/auth/login');
@@ -35713,6 +35742,9 @@ var saveUserDetail = exports.saveUserDetail = makeAction('SAVE_USER');
 var clearUser = exports.clearUser = makeAction('CLEAR_USER');
 var addPost = exports.addPost = makeAction('ADD_POST');
 var deletePostItem = exports.deletePostItem = makeAction('DELETE_POST');
+var deleteTwitterAccount = exports.deleteTwitterAccount = makeAction('DELETE_TWITTER_ACCOUNT');
+var updateTimezone = exports.updateTimezone = makeAction('UPDATE_TIMEZONE');
+var updateEmail = exports.updateEmail = makeAction('UPDATE_EMAIL');
 
 function makeAction(type) {
   return function (_ref) {
@@ -35796,6 +35828,16 @@ var mutations = {
       var post_index = _lodash2.default.findIndex(state.accounts[index].posts.data, { 'id': id });
       state.accounts[index].posts.data.splice(post_index, 1);
     });
+  },
+  DELETE_TWITTER_ACCOUNT: function DELETE_TWITTER_ACCOUNT(state, id) {
+    var index = _lodash2.default.findIndex(state.accounts, { 'id': id });
+    state.accounts.splice(index, 1);
+  },
+  UPDATE_EMAIL: function UPDATE_EMAIL(state, email) {
+    state.email = email;
+  },
+  UPDATE_TIMEZONE: function UPDATE_TIMEZONE(state, timezone) {
+    state.timezone = timezone;
   },
   CLEAR_USER: function CLEAR_USER(state) {
     state.user = {}, state.accounts = [];

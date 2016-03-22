@@ -1,12 +1,28 @@
 <?php namespace LaterPost\Api;
 
+use Dingo\Api\Exception\StoreResourceFailedException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use LaterPost\Api\Transformers\UserTransformer;
 use LaterPost\Http\Requests;
+use LaterPost\Services\UserService;
 
 class UserController extends BaseController
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
+     * UserController constructor.
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
 
 
     /**
@@ -21,69 +37,67 @@ class UserController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Update user's timezone
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
      */
-    public function create()
+    public function updateTimezone(Request $request)
     {
-        //
+        try {
+            $this->userService->updateTimezone($request->get('timezone'));
+            return $this->response->created();
+        } catch(\Exception $e) {
+            $this->response->errorBadRequest($e->getMessage());
+        }
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Update Password
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     * @throws StoreResourceFailedException
      */
-    public function store(Request $request)
+    public function updatePassword(Request $request)
     {
-        //
+       $validator = Validator::make($request->all(),[
+           'password' => 'required|confirmed|min:6',
+       ]);
+        if($validator->fails())
+        {
+            throw new StoreResourceFailedException('Missing fields.',$validator->errors());
+        }
+        $this->userService->updatePassword($request->get('password'));
+        return $this->response->created();
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Update user's email
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
      */
-    public function show($id)
+    public function updateEmail(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        try {
+            $this->userService->updateEmail($request->email);
+            return $this->response->created();
+        } catch (\Exception $e) {
+            $this->response->errorBadRequest($e->getMessage());
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy()
     {
-        //
+        try {
+            $this->userService->deleteAccount();
+        } catch (\Exception $e)
+        {
+            $this->response->errorBadRequest($e->getMessage());
+        }
     }
 
     /**

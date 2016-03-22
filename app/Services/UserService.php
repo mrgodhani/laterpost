@@ -2,6 +2,7 @@
 
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use LaterPost\Repository\UserRepo;
 
 /**
@@ -31,6 +32,38 @@ class UserService
      */
     public function createUser($data){
         $user = $this->userRepo->create($data);
-        return Auth::generateTokenById(1);
+        return Auth::generateTokenById($user->id);
+    }
+
+    /**
+     *  Delete Account
+     */
+    public function deleteAccount(){
+        $this->userRepo->delete(Auth::user()->id);
+    }
+
+    /**
+     * Update user's password
+     * @param $password
+     */
+    public function  updatePassword($password)
+    {
+        $this->userRepo->update(['password' => Hash::make($password)],Auth::user()->id);
+    }
+
+    /**
+     * Update Email
+     * @param $email
+     */
+    public function updateEmail($email){
+        $this->userRepo->update(['email' => $email],Auth::user()->id);
+    }
+
+    /**
+     * Update user's timezone
+     * @param $timezone
+     */
+    public function updateTimezone($timezone){
+        $this->userRepo->update(['timezone' => $timezone],Auth::user()->id);
     }
 }

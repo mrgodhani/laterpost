@@ -17,19 +17,12 @@ export default function()
       return request
     },
     response(response){
-      if(response.data.message === 'Token has expired' && response.status === 401){
+      if(response.data.message === 'Token has expired'){
         console.log("Token Expired")
         return Unauthorized.handle(response)
       }
 
-      if(response.data.message === 'The token has been blacklisted' && response.status === 500){
-        console.log("Unauthorized")
-        localStorage.removeItem('token')
-        return this.$route.router.go('/auth/login')
-      }
-
-
-      if(response.data.message !== 'Token has expired' && response.status === 401) {
+      if(response.data.message === 'The token has been blacklisted'){
         console.log("Unauthorized")
         localStorage.removeItem('token')
         return this.$route.router.go('/auth/login')
