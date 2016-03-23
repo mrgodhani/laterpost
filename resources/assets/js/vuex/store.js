@@ -49,7 +49,8 @@ const mutations = {
     currentaccount.forEach(function(item){
       var account_index = _.findIndex(state.accounts,{ 'id' : item.id })
       var post_index = _.findIndex(state.accounts[account_index].posts.data,{ 'id' : postid })
-      data.scheduled_at = moment(data.scheduled_at).format('DD MMM YYYY hh:mm a')
+      var utc = moment.utc(data['scheduled_at']).format()
+      data.scheduled_at = moment.tz(new Date(utc).toISOString(),state.timezone).format('DD MMM YYYY hh:mm a')
       state.accounts[account_index].posts.data[post_index].content = data['content']
       state.accounts[account_index].posts.data[post_index].scheduled_at = data['scheduled_at']
       state.accounts[account_index].posts.data[post_index].media_path = data['media_path']
