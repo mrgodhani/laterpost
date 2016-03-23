@@ -2,7 +2,7 @@
   <nav class="navbar navbar-default navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
-      <a href="#" class="navbar-brand"><i class="fa fa-fw fa-paper-plane-o"></i> Laterpost</a>
+      <a v-link="'/'" class="navbar-brand"><i class="fa fa-fw fa-paper-plane-o"></i> Laterpost</a>
     </div>
     <div id="navbar">
       <ul class="nav navbar-nav navbar-right">

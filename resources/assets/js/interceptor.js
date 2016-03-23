@@ -22,6 +22,12 @@ export default function()
         return Unauthorized.handle(response)
       }
 
+      if(response.data.message === 'Unable to authenticate with invalid token.'){
+        console.log("Unauthorized")
+        localStorage.removeItem('token')
+        return this.$route.router.go('/auth/login')
+      }
+
       if(response.data.message === 'The token has been blacklisted'){
         console.log("Unauthorized")
         localStorage.removeItem('token')
