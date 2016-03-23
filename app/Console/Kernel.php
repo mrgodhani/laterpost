@@ -14,7 +14,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         // Commands\Inspire::class,
-        Commands\RunScheduleTweets::class
+        Commands\RunScheduleTweets::class,
+        Commands\ConfigAWS::class,
+        Commands\Init::class
     ];
 
     /**
