@@ -81,7 +81,7 @@ stdout_logfile=/home/forge/app.com/worker.log
 - [ ] Multi image upload
 - [ ] Slack integration to notify user when all pending scheduled queues are empty.
 - [ ] Integrating Facebook
-- [ ] Editing scheduled tweets
+- [x] Editing scheduled tweets
 
 Linkedin apparently cannot be integrated because of limitation of API availability.
 

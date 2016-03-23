@@ -1,7 +1,7 @@
 <template>
   <div class="modal-mask" v-show="show" transition="modal">
     <div class="modal-wrapper">
-      <div class="modal-container">
+      <div class="modal-container" v-bind:class="{ 'modal-large' : large }">
         <div class="modal-body">
           <slot name="body">
           </slot>
@@ -29,6 +29,9 @@ export default {
         type: Boolean,
         required: true,
         twoWay: true
+      },
+      large: {
+        type: Boolean
       }
   }
 }

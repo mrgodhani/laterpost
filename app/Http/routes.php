@@ -41,9 +41,10 @@ $api->version('v1', function ($api) {
         $api->patch('password','LaterPost\Api\UserController@updatePassword');
         $api->patch('email','LaterPost\Api\UserController@updateEmail');
         $api->delete('accounts/{id}','LaterPost\Api\AccountController@deleteAccount');
+        $api->get('posts/{id}/image','LaterPost\Api\PostController@getImage');
         $api->post('posts','LaterPost\Api\PostController@store');
         $api->post('tweet','LaterPost\Api\PostController@tweet');
-        $api->patch('posts','LaterPost\Api\PostController@update');
+        $api->post('posts/{id}','LaterPost\Api\PostController@update');
         $api->delete('posts','LaterPost\Api\PostController@delete');
     });
 });

@@ -34,7 +34,7 @@ class PostService
         $file = null;
         if(!is_null($image)){
             $file = $image->getClientOriginalName();
-            Storage::disk('s3')->put($file,fopen($image,'r'));
+            Storage::put($file,fopen($image,'r'));
         }
         $job = (new TwitterPost(!is_null($image) ? true : false,$file,!is_null($image) ? $image->getMimeType() : null ,$data))->delay(1);
         $this->dispatch($job);
@@ -56,7 +56,7 @@ class PostService
         {
             if(!is_null($image)){
                 $file_name = str_random(10).'.'.$image->getClientOriginalExtension();
-                Storage::disk('s3')->put($file_name,fopen($image,'r'));
+                Storage::put($file_name,fopen($image,'r'));
             }
             $post[]  = $this->postRepo->create([
                 'content' => $data['content'],
@@ -70,8 +70,79 @@ class PostService
         return collect($post);
     }
 
+    /**
+     * Update Post
+     * @param $id
+     * @param $image
+     * @param $data
+     * @return mixed
+     */
+    public function updatePost($id,$image,$data)
+    {
+        $current_post = $this->postRepo->find($id);
+        $file_name = null;
+        $mimetype = null;
+        $date =  Carbon::createFromFormat('Y/m/d H:i',$data['scheduled_at'],$data['timezone']);
+        $date->setTimezone('UTC');
+        switch($image)
+        {
+            case "default":
+                $file_name = $current_post->media_path;
+                $mimetype = $current_post->mimetype;
+                break;
+            case null:
+                if(!is_null($current_post->media_path)){
+                    Storage::delete($current_post->media_path);
+                }
+                $file_name = null;
+                $mimetype = null;
+                break;
+            default:
+                if(!is_null($current_post->media_path)){
+                    Storage::delete($current_post->media_path);
+                }
+                $file_name = str_random(10).'.'.$image->getClientOriginalExtension();
+                $mimetype = $image->getMimeType();
+                Storage::put($file_name,fopen($image,'r'));
+                break;
+        }
+        $this->postRepo->update([
+            'content' => $data['content'],
+            'media_path' => $file_name,
+            'mimetype' => $mimetype,
+            'scheduled_at' => $date->format('Y-m-d H:i')
+        ],$id);
+        return [
+            'content' => $data['content'],
+            'media_path' => $file_name,
+            'mimetype' => $mimetype,
+            'scheduled_at' => $date->format('Y-m-d H:i')
+        ];
+    }
+
+    /**
+     * Delete post
+     * @param $id
+     */
     public function deletePost($id)
     {
         $this->postRepo->delete($id);
+    }
+
+    /**
+     * Get Image
+     * @param $id
+     * @return string
+     */
+    public function getImage($id)
+    {
+        $post = $this->postRepo->find($id);
+        $image = Storage::get($post->media_path);
+        $data = [
+            'mimeType' => $post->mimetype,
+            'filename' => $post->media_path,
+            'base64' => 'data:'.$post->mimetype.';base64,'.base64_encode($image)
+        ];
+        return $data;
     }
 }

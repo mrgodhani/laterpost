@@ -37,8 +37,34 @@ class PostController extends BaseController
     public function store(Request $request)
     {
         try {
-           $post = $this->postService->createPost($request->file('image'),$request->only('scheduled_at','content','accounts','timezone'));
-           return $this->response->collection($post,new PostTransformer);
+            $post = $this->postService->createPost($request->file('image'),$request->only('scheduled_at','content','accounts','timezone'));
+            return $this->response->collection($post,new PostTransformer);
+        } catch(\Exception $e)
+        {
+            $this->response->errorBadRequest($e->getMessage());
+        }
+    }
+
+    /**
+     * Update specific post
+     * @param $id
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function update($id,Request $request)
+    {
+        try {
+            if(!is_null($request->file('image')))
+            {
+                $image = $request->file('image');
+            } else if($request->has('image') && is_null($request->file('image')))
+            {
+                $image = null;
+            } else {
+                $image = "default";
+            }
+            $data = $request->only('scheduled_at','content','timezone');
+            return $this->postService->updatePost($id,$image,$data);
         } catch(\Exception $e)
         {
             $this->response->errorBadRequest($e->getMessage());
@@ -57,7 +83,22 @@ class PostController extends BaseController
             $this->response->accepted();
         } catch (\Exception $e)
         {
-           $this->response->errorBadRequest($e->getMessage());
+            $this->response->errorBadRequest($e->getMessage());
+        }
+    }
+
+    /**
+     * Get current post attached image
+     * @param $id
+     * @return string
+     */
+    public function getImage($id)
+    {
+        try {
+            return response($this->postService->getImage($id))->header('Content-Type', 'image/png');
+        } catch(\Exception $e)
+        {
+            $this->response->errorNotFound();
         }
     }
 
