@@ -9,6 +9,11 @@ export default {
     canReuse(transition){
       return false
     }
+  },
+  ready()
+  {
+    document.body.className = document.body.className.replace("auth","");
+    document.getElementsByTagName('body')[0].className+='auth'
   }
 }
 </script>

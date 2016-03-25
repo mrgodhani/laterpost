@@ -1,38 +1,21 @@
 <template>
   <div>
       <div class="login-wrapper">
-        <div class="jumbotron login-panel">
-          <div class="row">
-            <div class="col-xs-8">
-              <h1><i class="fa fa-fw fa-paper-plane-o"></i> Laterpost</h1>
-              <br/>
-              <p class="text-muted small-text">Platform for scheduling twitter status updates</p>
-              <br/>
-              <p class="text-muted"><i class="fa fa-fw fa-github"></i><a href='https://github.com/mrgodhani/laterpost' target="_blank"> View it on github</a></p>
-            </div>
-            <div class="col-xs-4">
-              <p><strong>Login with your account</strong></p>
-              <br/>
-              <div class="alert alert-danger" v-if="errors">
-                <span v-if="typeof errors === 'string'">{{ errors }}</span>
-                <ul class="list-unstyled" v-if="typeof errors !== 'string'">
-                  <li v-for="error in errors">{{ error }}</li>
-                </ul>
-              </div>
-              <form v-on:submit.prevent="login">
-                <div class="form-group">
-                  <input type="email" class="form-control" v-model="user.email" placeholder="Email">
-                </div>
-                <div class="form-group">
-                  <input type="password" class="form-control" v-model="user.password" placeholder="Password">
-                </div>
-                <button type="submit" class="btn btn-block btn-outline btn-primary">Login</button>
-              </form>
-              <br/>
-              <p class="text-muted">Don't have an account ? <a v-link="'/auth/register'">Register</a></p>
-              <!-- <p class="text-muted">Forgot password ?</p> -->
-            </div>
+        <form v-on:submit.prevent="login">
+          <h2 class="text-center"><i class="fa fa-fw fa-paper-plane-o"></i> Laterpost<br/><small>Platform for scheduling twitter updates.</small></h2>
+          <br/>
+          <div class="form-group">
+            <input type="email" class="form-control" v-model="user.email" placeholder="Email">
           </div>
+          <div class="form-group">
+            <input type="password" class="form-control" v-model="user.password" placeholder="Password">
+          </div>
+          <br/>
+          <button type="submit" class="btn btn-block login-btn btn-primary">Login</button>
+          <br/>
+          <p class="text-center">Don't have an account ? <a v-link="'/auth/register'">Register</a></p>
+          <p class="text-center">Forgot password ?</p>
+        </form>
         </div>
       </div>
   </div>
@@ -57,9 +40,18 @@ export default {
        return self.$route.router.go('/')
      },function(response){
        if(response.status === 401){
-         self.errors = "Email or password is invalid"
+         UIkit.notify('Email or password is invalid')
        } else {
-         self.errors = response.data.errors
+         if(self.user.email === null && self.user.password === null) {
+           UIkit.notify('Email and password both are required.')
+         } else {
+           if(response.data.errors['password']){
+              UIkit.notify(response.data.errors['password'][0])
+           }
+           if(response.data.errors['email']){
+              UIkit.notify(response.data.errors['email'][0])
+           }
+         }
        }
      })
    }

@@ -10,8 +10,12 @@
 export default {
   route:{
     canReuse(transition){
-      return false
+      return true
     }
+  },
+  ready()
+  {
+    document.body.className = document.body.className.replace("auth","");
   }
 }
 </script>
