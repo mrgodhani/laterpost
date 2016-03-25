@@ -21,6 +21,7 @@
                   <i class="fa fa-camera"></i>
                 </label>
               </span>
+              <p>Change schedule time</p>
             </div>
             <div class="pull-right">
               <v-timepicker name="datetime" :model.sync="datetimeselect" placeholder="Choose Date & Time"></v-timepicker>

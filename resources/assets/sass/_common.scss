@@ -179,6 +179,17 @@ body.auth {
     border:1px solid #f5f5f5;
     background:#f5f5f5;
 
+    .pull-left {
+      p {
+        margin-left: 100px;
+        position: absolute;
+        line-height: 25px;
+        top: 15px;
+        left: 70px;
+        font-family: 'Open Sans', sans-serif;
+      }
+    }
+
     #fileselector {
       margin:10px;
     }
