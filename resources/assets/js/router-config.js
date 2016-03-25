@@ -4,6 +4,7 @@ import Login from './components/views/auth/login.vue'
 import Dashboard from './components/views/Dashboard.vue'
 import Compose from './components/views/Compose.vue'
 import Settings from './components/views/Settings.vue'
+import Forget from './components/views/auth/forget.vue'
 
 export function configRouter (router) {
 
@@ -29,6 +30,9 @@ export function configRouter (router) {
         },
         '/register':{
           component: Register
+        },
+        '/forget': {
+          component: Forget
         }
       }
     }

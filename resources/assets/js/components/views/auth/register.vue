@@ -1,11 +1,6 @@
 <template>
   <div>
     <div class="login-wrapper">
-      <!-- <div class="alert alert-danger" v-if="errors">
-        <ul class="list-unstyled">
-          <li v-for="error in errors">{{ error }}</li>
-        </ul>
-      </div> -->
       <form v-on:submit.prevent="register">
         <h3 class="text-center">Register</h3>
         <br/>
