@@ -16,6 +16,10 @@
           <p class="text-center">Don't have an account ? <a v-link="'/auth/register'">Register</a></p>
           <p class="text-center">Forgot password ?</p>
         </form>
+        <br/>
+        <p><a href="https://github.com/mrgodhani/laterpost">View it on Github</a></p>
+        <br/>
+        <p><i class="fa fa-copyright"></i> Meet Godhani 2016</p>
         </div>
       </div>
   </div>

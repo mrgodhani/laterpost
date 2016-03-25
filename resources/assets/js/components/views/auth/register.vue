@@ -26,6 +26,8 @@
       </form>
       <br/>
       <p class="text-muted">Already have a account ? <a v-link="'/auth/login'">Sign in</a></p>
+      <br/>
+      <p><i class="fa fa-copyright"></i> Meet Godhani 2016</p>
     </div>
   </div>
 </template>
