@@ -78,10 +78,11 @@ stdout_logfile=/home/forge/app.com/worker.log
 - [x] Managing connected social media accounts and other account settings (i.e password change, timezone change and email update)
 - [x] Sending twitter update with image (Currently supports 1 image upload only)
 - [x] Character counting similar to twitter
+- [x] Editing scheduled tweets
+- [ ] URL Shorteer feature (bit.ly integration)
 - [ ] Multi image upload
 - [ ] Slack integration to notify user when all pending scheduled queues are empty.
 - [ ] Integrating Facebook
-- [x] Editing scheduled tweets
 
 Linkedin apparently cannot be integrated because of limitation of API availability.
 
