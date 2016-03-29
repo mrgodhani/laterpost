@@ -79,7 +79,7 @@ stdout_logfile=/home/forge/app.com/worker.log
 - [x] Sending twitter update with image (Currently supports 1 image upload only)
 - [x] Character counting similar to twitter
 - [x] Editing scheduled tweets
-- [ ] URL Shorteer feature (bit.ly integration)
+- [ ] URL Shorterner feature (bit.ly integration)
 - [ ] Multi image upload
 - [ ] Slack integration to notify user when all pending scheduled queues are empty.
 - [ ] Integrating Facebook
