@@ -3,7 +3,10 @@ import Register from './components/views/auth/register.vue'
 import Login from './components/views/auth/login.vue'
 import Dashboard from './components/views/Dashboard.vue'
 import Compose from './components/views/Compose.vue'
-import Settings from './components/views/Settings.vue'
+import Settings from './components/views/settings/index.vue'
+import General  from './components/views/settings/general.vue'
+import Accounts from './components/views/settings/accounts.vue'
+import Shorteners from './components/views/settings/shorteners.vue'
 import Forget from './components/views/auth/forget.vue'
 
 export function configRouter (router) {
@@ -14,7 +17,18 @@ export function configRouter (router) {
       auth: true,
       subRoutes: {
         '/settings':{
-          component: Settings
+          component: Settings,
+          subRoutes: {
+            '/accounts': {
+              component: Accounts
+            },
+            '/shorteners': {
+              component: Shorteners
+            },
+            '/': {
+              component: General
+            }
+          }
         },
         '/': {
           component: Compose

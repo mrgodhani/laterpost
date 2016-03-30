@@ -35,6 +35,12 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'bitly' => [
+        'client_id' => env('BITLY_KEY'),
+        'client_secret' => env('BITLY_SECRET'),
+        'redirect' => env('BITLY_REDIRECT_URI'),
+    ],
+
     'twitter' => [
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),

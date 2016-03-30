@@ -16,6 +16,10 @@ class EventServiceProvider extends ServiceProvider
         'LaterPost\Events\SomeEvent' => [
             'LaterPost\Listeners\EventListener',
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            // add your listeners (aka providers) here
+            'SocialiteProviders\Bitly\BitlyExtendSocialite@handle',
+        ],
     ];
 
     /**

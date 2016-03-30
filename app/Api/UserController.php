@@ -108,4 +108,18 @@ class UserController extends BaseController
     {
         return timezone_identifiers_list();
     }
+
+    /**
+     * Update Shortener Domain
+     * @param Request $request
+     */
+    public function updateShortener(Request $request)
+    {
+        try {
+            $this->userService->updateDomain($request->get('domain'));
+        } catch (\Exception $e)
+        {
+            $this->response->errorBadRequest($e->getMessage());
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="login-wrapper">
-      <form v-on:submit.prevent="register">
+      <form v-on:submit.prevent="register" autocomplete="off">
         <h3 class="text-center">Register</h3>
         <br/>
         <div class="form-group">
@@ -22,7 +22,7 @@
       <br/>
       <p class="text-muted">Already have a account ? <a v-link="'/auth/login'">Sign in</a></p>
       <br/>
-      <p><i class="fa fa-copyright"></i> Meet Godhani 2016</p>
+      <p>Proudly hosted on <a href="https://m.do.co/c/58c511514217" target="_blank"> Digital Ocean</a></p>
     </div>
   </div>
 </template>

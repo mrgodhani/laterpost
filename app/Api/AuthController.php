@@ -1,9 +1,12 @@
 <?php namespace LaterPost\Api;
 
 use Dingo\Api\Exception\StoreResourceFailedException;
+use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Socialite\Facades\Socialite;
 use LaterPost\Services\AccountService;
@@ -16,6 +19,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
  */
 class AuthController extends BaseController
 {
+    use ResetsPasswords;
     /**
      * @var UserService
      */
@@ -47,6 +51,33 @@ class AuthController extends BaseController
     }
 
     /**
+     * Bitly
+     * @param Request $request
+     * @return mixed
+     */
+    public function bitly(Request $request)
+    {
+        $request->session()->put('uid',$request->get('user'));
+        return Socialite::driver('bitly')->redirect();
+    }
+
+    /**
+     * Bitly Callback
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function bitly_callback(Request $request)
+    {
+        $user = Socialite::driver('bitly')->user();
+        $check = $this->accountService->checkBitly($request->session()->get('uid'));
+        if(!$check){
+            $this->accountService->create($user,$request->session()->get('uid'),'bitly');
+        }
+        $request->session()->forget('uid');
+        return redirect('/settings/shorteners');
+    }
+
+    /**
      * Twitter Callback
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -56,7 +87,7 @@ class AuthController extends BaseController
         if($this->accountService->checkAccount($user->id)){
             $this->accountService->updateAccount($user,$request->session()->get('uid'));
         } else {
-            $this->accountService->create($user,$request->session()->get('uid'));
+            $this->accountService->create($user,$request->session()->get('uid'),"twitter");
         }
         $request->session()->forget('uid');
         return redirect('/');
@@ -110,4 +141,46 @@ class AuthController extends BaseController
         $token = Auth::refresh();
         return (new Response(compact('token'),200))->header('Content-Type','application/json');
     }
+
+    /**
+     * Reset Password
+     * @param Request $request
+     */
+    public function reset(Request $request)
+    {
+        $validate = Validator::make($request->all(),[
+            'email' => 'required|email'
+        ]);
+        if($validate->fails())
+        {
+            $this->response->error($validate->errors(),400);
+        }
+        $response = Password::sendResetLink($request->only('email'),function(Message $message){
+            $message->subject($this->getEmailSubject());
+        });
+
+        switch($response) {
+            case Password::RESET_LINK_SENT:
+                break;
+            case Password::INVALID_USER:
+                break;
+        }
+    }
+
+    /**
+     * Post Reset
+     * @param Request $request
+     */
+    public function postReset(Request $request)
+    {
+        $this->validate($request,[
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed'
+        ]);
+
+        $credentials = $request->only('email','password','password_confirmation','token');
+    }
+
+
 }

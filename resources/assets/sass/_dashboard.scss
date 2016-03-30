@@ -154,6 +154,11 @@
     background-image: -o-linear-gradient(top, #ECECEC, #FBFBFB);
     background-image: linear-gradient(to bottom, #ECECEC, #FBFBFB);
 
+    a {
+      text-decoration:none;
+      color:black;
+    }
+
     .profile {
       position:relative;
       float:left;

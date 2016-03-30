@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="login-wrapper">
-      <form v-on:submit.prevent="login">
+      <form v-on:submit.prevent="login" autocomplete="off">
         <h2 class="text-center"><i class="fa fa-fw fa-paper-plane-o"></i> Laterpost<br/><small>Platform for scheduling twitter updates.</small></h2>
         <br/>
         <div class="form-group">
@@ -17,9 +17,8 @@
         <p class="text-center"><a v-link="'/auth/forget'">Forgot password ?</a></p>
       </form>
       <br/>
-      <p><a href="https://github.com/mrgodhani/laterpost">View it on Github</a></p>
       <br/>
-      <p><i class="fa fa-copyright"></i> Meet Godhani 2016</p>
+      <p>Proudly hosted on <a href="https://m.do.co/c/58c511514217" target="_blank"> Digital Ocean</a></p>
     </div>
   </div>
 </template>

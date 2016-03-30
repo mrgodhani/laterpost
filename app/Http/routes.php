@@ -26,23 +26,28 @@ $api = app('Dingo\Api\Routing\Router');
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('auth/twitter','\LaterPost\Api\AuthController@twitter');
+    Route::get('auth/bitly','\LaterPost\Api\AuthController@bitly');
     Route::get('auth/twitter/callback','\LaterPost\Api\AuthController@twitter_callback');
+    Route::get('auth/bitly/callback','\LaterPost\Api\AuthController@bitly_callback');
 });
 
 $api->version('v1', function ($api) {
     $api->post('login','LaterPost\Api\AuthController@login');
     $api->post('register','LaterPost\Api\AuthController@register');
     $api->get('refresh','LaterPost\Api\AuthController@refresh');
+    $api->post('reset','LaterPost\Api\AuthController@reset');
     $api->group(['middleware' => 'api.auth'],function($api){
         $api->get('users/current','LaterPost\Api\UserController@index');
         $api->delete('users','LaterPost\Api\UserController@destroy');
         $api->get('timezones','LaterPost\Api\UserController@timezone');
         $api->patch('timezone','LaterPost\Api\UserController@updateTimezone');
         $api->patch('password','LaterPost\Api\UserController@updatePassword');
+        $api->patch('shortener','LaterPost\Api\UserController@updateShortener');
         $api->patch('email','LaterPost\Api\UserController@updateEmail');
         $api->delete('accounts/{id}','LaterPost\Api\AccountController@deleteAccount');
         $api->get('posts/{id}/image','LaterPost\Api\PostController@getImage');
         $api->post('posts','LaterPost\Api\PostController@store');
+        $api->post('shorten','LaterPost\Api\PostController@shorten');
         $api->post('tweet','LaterPost\Api\PostController@tweet');
         $api->post('posts/{id}','LaterPost\Api\PostController@update');
         $api->delete('posts','LaterPost\Api\PostController@delete');

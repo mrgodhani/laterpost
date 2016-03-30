@@ -15,7 +15,8 @@ class UserTransformer extends TransformerAbstract
             'id' => (int) $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'timezone' => $user->timezone
+            'timezone' => $user->timezone,
+            'default_shortener' => $user->default_shortener
         ];
     }
 

@@ -9,4 +9,30 @@ class AccountRepo extends Repository
     {
        return 'LaterPost\Account';
     }
+
+    /**
+     * Check bitly account
+     * @param $userid
+     * @return bool
+     */
+    public function checkBitly($userid)
+    {
+        $account = $this->model->where('user_id',$userid)->where('provider','bitly')->get();
+        if(count($account) > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get Bitly Token
+     * @param $id
+     * @return mixed
+     */
+    public function getBitlyToken($id)
+    {
+        $account = $this->model->where('user_id',$id)->where('provider','bitly')->first();
+        return $account->token;
+    }
 }

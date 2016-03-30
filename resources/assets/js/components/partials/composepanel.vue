@@ -20,7 +20,7 @@
     <a href='{{ link }}' class="connect-accounts">Connect Account</a>
     <div class="countdown" v-if="tweet">{{ tweetcount }}</div>
     <br/>
-    <textarea class="form-control" rows="5" v-model="tweet" placeholder="Write your post here"></textarea>
+    <textarea class="form-control" rows="5" v-model="tweet" placeholder="Write your post here" @keyup.enter="shortenLink" @keyup.space="shortenLink"></textarea>
     <div class="row" v-if="image">
       <div class="col-xs-3">
         <a href="#" class="thumbnail">
@@ -48,11 +48,13 @@
 <script>
 import _ from 'lodash'
 import { addPost } from '../../vuex/actions'
+
 export default {
   vuex: {
     getters: {
       timezone: state => state.timezone,
       accounts: state => state.accounts,
+      shortener: state => state.shortener,
       link: state => state.link
     },
     actions: {
@@ -73,6 +75,9 @@ export default {
   computed: {
     getTimezone(){
       return this.timezone
+    },
+    getShortenerSetting(){
+      return this.shortener
     },
     allAccounts(){
       return _.filter(this.accounts,'selected')
@@ -169,6 +174,29 @@ export default {
         this.image = null,
         this.tweet = ''
       })
+    },
+    shortenLink(){
+      var m
+      var self = this
+      var links = []
+      var re = /((http|https|ftp|ftps)\:\/\/)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,4}(\/\S*)?\b/ig;
+      while((m = re.exec(this.tweet)) !== null){
+        if(m.index === re.lastIndex){
+          re.lastIndex++
+        }
+        if(m[0] !== '' && this.getShortenerSetting !== null){
+          links.push(m[0]);
+        }
+      }
+      if(this.getShortenerSetting !== null){
+        var link = links[links.length - 1]
+        if(!link.match(/^http/)){
+          link = 'http://' + links[links.length - 1]
+        }
+        this.$http.post('shorten',{ link : link}).then(function(response){
+            self.tweet = self.tweet.replace(links[links.length - 1],response.data.data.url)
+        })
+      }
     }
   }
 }

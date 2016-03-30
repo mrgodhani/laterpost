@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "33edd6a3cb5150037d8e2b9c29567f43",
-    "content-hash": "f9e0a4ffc75cb8ae19ae8a3376fd6ee8",
+    "hash": "778bbf1bd81159b763e132a17a695625",
+    "content-hash": "06ad8054920c6aa19fb79727551e8bdd",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -2234,6 +2234,86 @@
             "time": "2016-03-09 05:03:14"
         },
         {
+            "name": "socialiteproviders/bitly",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Bit.ly.git",
+                "reference": "63e902f12183acc19b55dc37fb0e04bd0b758790"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Bit.ly/zipball/63e902f12183acc19b55dc37fb0e04bd0b758790",
+                "reference": "63e902f12183acc19b55dc37fb0e04bd0b758790",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "socialiteproviders/manager": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Bitly\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "DraperStudio",
+                    "email": "hello@draperstud.io"
+                }
+            ],
+            "description": "Bitly OAuth2 Provider for Laravel Socialite",
+            "time": "2015-06-18 14:14:15"
+        },
+        {
+            "name": "socialiteproviders/manager",
+            "version": "1.2.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Manager.git",
+                "reference": "f91e366b29bedab6cb2491f32113f6a811ac4972"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/f91e366b29bedab6cb2491f32113f6a811ac4972",
+                "reference": "f91e366b29bedab6cb2491f32113f6a811ac4972",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0",
+                "laravel/framework": "~5.0|~5.1|~5.2",
+                "laravel/socialite": "~2.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "4.5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Manager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andy Wendt",
+                    "email": "andy@awendt.com"
+                }
+            ],
+            "description": "Easily add new or override built-in providers in Laravel Socialite.",
+            "time": "2016-02-20 22:18:54"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v5.4.1",
             "source": {
@@ -3074,7 +3154,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/ccf3497fa26211190699e6ec6070569fd9956c6b",
+                "url": "https://api.github.com/repos/tymondesigns/jwt-auth/zipball/63cd70914354644c422971003b95cb8466a04f09",
                 "reference": "ccf3497fa26211190699e6ec6070569fd9956c6b",
                 "shasum": ""
             },

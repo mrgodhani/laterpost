@@ -66,4 +66,13 @@ class UserService
     public function updateTimezone($timezone){
         $this->userRepo->update(['timezone' => $timezone],Auth::user()->id);
     }
+
+    /**
+     * Update shortener domain
+     * @param $domain
+     */
+    public function updateDomain($domain)
+    {
+        $this->userRepo->update(['default_shortener' => $domain],Auth::user()->id);
+    }
 }

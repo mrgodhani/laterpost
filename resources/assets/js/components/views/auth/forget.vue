@@ -7,6 +7,7 @@
         <div class="form-group">
           <input type="email" class="form-control" v-model="user.email" placeholder="Email">
         </div>
+        <br/>
         <button type="submit" class="btn btn-block login-btn btn-primary">Send Reset Email</button>
         <br/>
         <p class="text-center">Already have a account ? <a v-link="'/auth/login'">Sign In</a></p>

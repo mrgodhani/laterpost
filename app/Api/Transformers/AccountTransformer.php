@@ -15,7 +15,8 @@ class AccountTransformer extends TransformerAbstract
             'id' => $account->id,
             'username' => $account->username,
             'avatar' => $account->avatar,
-            'profile_id' => $account->profile_id
+            'profile_id' => $account->profile_id,
+            'provider' => $account->provider
         ];
     }
 

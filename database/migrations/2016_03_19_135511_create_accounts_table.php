@@ -16,9 +16,10 @@ class CreateAccountsTable extends Migration
             $table->increments('id');
             $table->string('token');
             $table->string('secret')->nullable()->default(NULL);
-            $table->string('username');
-            $table->string('avatar');
-            $table->string('profile_id');
+            $table->string('provider')->default('twitter');
+            $table->string('username')->nullable()->default(NULL);
+            $table->string('avatar')->nullable()->default(NULL);
+            $table->string('profile_id')->nullable()->default(NULL);
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')
                 ->references('id')->on('users')

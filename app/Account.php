@@ -15,7 +15,7 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'secret', 'username','avatar','profile_id','user_id'
+        'token', 'secret', 'username','avatar','profile_id','user_id','provider'
     ];
 
     /**

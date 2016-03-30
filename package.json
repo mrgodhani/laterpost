@@ -7,10 +7,10 @@
   },
   "dependencies": {
     "bootstrap-sass": "^3.0.0",
-    "get-urls": "^5.0.0",
     "laravel-elixir": "^4.0.0",
     "moment": "^2.12.0",
     "moment-timezone": "^0.5.2",
+    "url": "^0.11.0",
     "vue": "^1.0.18",
     "vue-resource": "^0.7.0",
     "vue-router": "^0.7.11",

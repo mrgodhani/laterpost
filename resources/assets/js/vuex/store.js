@@ -7,16 +7,24 @@ Vue.use(Vuex)
 
 const state = {
   email: null,
+  shortener: null,
+  bitly: [],
   accounts: [],
   timezone: null,
-  link: null
+  link: null,
+  bitlylink: null
 }
 
 const mutations = {
   SAVE_USER (state,data) {
     state.email = data.email
     state.timezone = data.timezone
-    state.accounts = data.accounts.data.map(function(obj,key){
+    var twitter_accounts =  _.filter(data.accounts.data,{ 'provider' : 'twitter' });
+    state.bitly = _.filter(data.accounts.data,{ 'provider' : 'bitly' });
+    if(data.default_shortener !== null){
+          state.shortener = data.default_shortener
+    }
+    state.accounts = twitter_accounts.map(function(obj,key){
       if(key === 0){
         obj.selected = true
         obj.compose_profile = true
@@ -32,9 +40,10 @@ const mutations = {
         item.scheduled_at = moment.tz(new Date(utc).toISOString(),state.timezone).format('DD MMM YYYY hh:mm a')
         return item
       });
-      return obj
-    })
+      return obj;
+    });
     state.link = '/auth/twitter?user=' + data.id
+    state.bitlylink = '/auth/bitly?user=' + data.id
   },
   ADD_POST(state,data){
     data.forEach(function(item){
@@ -44,8 +53,7 @@ const mutations = {
       state.accounts[index].posts.data.push(item)
     })
   },
-  UPDATE_POST(state,currentaccount,postid,data)
-  {
+  UPDATE_POST(state,currentaccount,postid,data){
     currentaccount.forEach(function(item){
       var account_index = _.findIndex(state.accounts,{ 'id' : item.id })
       var post_index = _.findIndex(state.accounts[account_index].posts.data,{ 'id' : postid })
@@ -64,18 +72,18 @@ const mutations = {
       state.accounts[index].posts.data.splice(post_index,1)
     })
   },
-  DELETE_TWITTER_ACCOUNT (state,id)
-  {
+  DELETE_TWITTER_ACCOUNT (state,id){
     var index = _.findIndex(state.accounts,{ 'id' : id})
     state.accounts.splice(index,1)
   },
-  UPDATE_EMAIL(state,email)
-  {
+  UPDATE_EMAIL(state,email){
     state.email = email
   },
-  UPDATE_TIMEZONE(state,timezone)
-  {
+  UPDATE_TIMEZONE(state,timezone){
     state.timezone = timezone
+  },
+  UPDATE_DOMAIN(state,domainname){
+    state.shortener = domainname
   },
   CLEAR_USER(state){
     state.email = {},

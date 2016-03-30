@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use LaterPost\Api\Transformers\PostTransformer;
 use LaterPost\Http\Requests;
 use LaterPost\Jobs\TwitterPost;
+use LaterPost\Services\BitlyService;
 use LaterPost\Services\PostService;
 use LaterPost\Services\TwitterService;
 
@@ -18,16 +19,22 @@ class PostController extends BaseController
      * @var PostService
      */
     private $postService;
+    /**
+     * @var BitlyService
+     */
+    private $bitlyService;
 
     /**
      * PostController constructor.
      * @param TwitterService $twitterService
      * @param PostService $postService
+     * @param BitlyService $bitlyService
      */
-    public function __construct(TwitterService $twitterService,PostService $postService)
+    public function __construct(TwitterService $twitterService,PostService $postService,BitlyService $bitlyService)
     {
         $this->twitterService = $twitterService;
         $this->postService = $postService;
+        $this->bitlyService = $bitlyService;
     }
 
     /**
@@ -111,6 +118,21 @@ class PostController extends BaseController
         try {
             $this->postService->deletePost($request->get('id'));
             return $this->response->created();
+        } catch(\Exception $e)
+        {
+            $this->response->errorBadRequest($e->getMessage());
+        }
+    }
+
+    /**
+     * Shorten Link
+     * @param Request $request
+     * @return mixed
+     */
+    public function shorten(Request $request)
+    {
+        try {
+            return $this->bitlyService->shortenLink($request->get('link'));
         } catch(\Exception $e)
         {
             $this->response->errorBadRequest($e->getMessage());
