@@ -32,6 +32,10 @@ TWITTER_CLIENT_ID=
 TWITTER_CLIENT_SECRET=
 TWITTER_CLIENT_CALLBACK=
 
+BITLY_KEY=
+BITLY_SECRET=
+BITLY_REDIRECT_URI=
+
 AMAZON_KEY=
 AMAZON_SECRET=
 AMAZON_BUCKET=
@@ -79,7 +83,7 @@ stdout_logfile=/home/forge/app.com/worker.log
 - [x] Sending twitter update with image (Currently supports 1 image upload only)
 - [x] Character counting similar to twitter
 - [x] Editing scheduled tweets
-- [ ] URL Shorterner feature (bit.ly integration)
+- [x] URL Shorterner feature (bit.ly integration)
 - [ ] Multi image upload
 - [ ] Slack integration to notify user when all pending scheduled queues are empty.
 - [ ] Integrating Facebook
