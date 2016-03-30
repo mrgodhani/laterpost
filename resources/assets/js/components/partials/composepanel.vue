@@ -142,7 +142,7 @@ export default {
     },
     schedulePost(){
       var self = this
-      if(this.tweet !== null) {
+      if(this.tweet !== null || this.allAccounts.length > 0) {
         var data = new FormData()
         data.append('image',this.files)
         data.append('accounts',JSON.stringify(this.allAccounts))
@@ -164,16 +164,20 @@ export default {
       }
     },
     postNow(){
-      var data = new FormData()
-      data.append('image',this.files)
-      data.append('accounts',JSON.stringify(this.allAccounts))
-      data.append('content',this.tweet)
-      this.$http.post('tweet',data).then(function(response){
-        UIkit.notify('Successfully posted')
-        this.files = null,
-        this.image = null,
-        this.tweet = ''
-      })
+      if(this.allAccounts.length > 0) {
+        var data = new FormData()
+        data.append('image',this.files)
+        data.append('accounts',JSON.stringify(this.allAccounts))
+        data.append('content',this.tweet)
+        this.$http.post('tweet',data).then(function(response){
+          UIkit.notify('Successfully posted')
+          this.files = null,
+          this.image = null,
+          this.tweet = ''
+        })
+      } else {
+        UIkit.notify('Oops something went wrong');
+      }
     },
     shortenLink(){
       var m

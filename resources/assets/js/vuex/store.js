@@ -85,10 +85,15 @@ const mutations = {
   UPDATE_DOMAIN(state,domainname){
     state.shortener = domainname
   },
+  DELETE_BITLY(state,domain){
+    state.bitly = []
+  },
   CLEAR_USER(state){
     state.email = {},
     state.accounts = []
+    state.bitly = []
     state.link = null
+    state.shortener = null
     state.timezone = null
   }
 }

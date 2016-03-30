@@ -43,11 +43,11 @@
   </div>
   <br/>
   <a href='{{ link }}' class="btn btn-default" v-if="bitly_accounts.length === 0">Connect bit.ly account</a>
-  <button type="button" class="btn btn-default" v-if="bitly_accounts.length > 0">Disconnect  bit.ly</button>
+  <button type="button" class="btn btn-default" v-if="bitly_accounts.length > 0" @click="disconnect">Disconnect  bit.ly</button>
   <br/>
 </template>
 <script>
-import { updateDomain } from '../../../vuex/actions'
+import { updateDomain,removeBitly } from '../../../vuex/actions'
 
 export default {
   vuex: {
@@ -57,7 +57,8 @@ export default {
       shortener: state => state.shortener
     },
     actions: {
-      updateDomain
+      updateDomain,
+      removeBitly
     }
   },
   methods: {
@@ -65,6 +66,11 @@ export default {
     {
       this.$http.patch('shortener',{ domain : domain })
       this.updateDomain(domain)
+    },
+    disconnect()
+    {
+      this.$http.delete('accounts/bitly')
+      this.removeBitly()
     }
   }
 }

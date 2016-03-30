@@ -35,4 +35,13 @@ class AccountRepo extends Repository
         $account = $this->model->where('user_id',$id)->where('provider','bitly')->first();
         return $account->token;
     }
+
+    /**
+     * Delete Bitly ID
+     * @param $user_id
+     */
+    public function deleteBitlyAccount($user_id)
+    {
+        $this->model->where('user_id',$user_id)->where('provider','bitly')->delete();
+    }
 }

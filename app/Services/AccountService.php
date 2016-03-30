@@ -83,4 +83,12 @@ class AccountService
     {
         $this->accountRepo->delete($id);
     }
+
+    /**
+     * Delete Bitly
+     */
+    public function deleteBitlyAccount()
+    {
+        $this->accountRepo->deleteBitlyAccount(Auth::user()->id);
+    }
 }

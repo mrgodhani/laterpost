@@ -35,4 +35,16 @@ class AccountController extends BaseController
             $this->response->errorBadRequest($e->getMessage());
         }
     }
+
+    /**
+     * Delete or disconnect Bitly Account
+     */
+    public function deleteBitly()
+    {
+        try {
+            $this->accountService->deleteBitlyAccount();
+        } catch(\Exception $e) {
+            $this->response->errorBadRequest($e->getMessage());
+        }
+    }
 }

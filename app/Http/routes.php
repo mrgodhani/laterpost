@@ -44,6 +44,7 @@ $api->version('v1', function ($api) {
         $api->patch('password','LaterPost\Api\UserController@updatePassword');
         $api->patch('shortener','LaterPost\Api\UserController@updateShortener');
         $api->patch('email','LaterPost\Api\UserController@updateEmail');
+        $api->delete('accounts/bitly','LaterPost\Api\AccountController@deleteBitly');
         $api->delete('accounts/{id}','LaterPost\Api\AccountController@deleteAccount');
         $api->get('posts/{id}/image','LaterPost\Api\PostController@getImage');
         $api->post('posts','LaterPost\Api\PostController@store');
