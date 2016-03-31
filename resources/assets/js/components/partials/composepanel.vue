@@ -70,7 +70,8 @@ export default {
       files: null,
       showModal: false,
       tweetcount: null,
-      datetimeselect: null
+      datetimeselect: null,
+      shortenlinks: []
     }
   },
   computed: {
@@ -184,9 +185,8 @@ export default {
       var m
       var self = this
       var links = []
-      var domains = ['bit.ly','bitly.com','j.mp']
       var re = /((http|https|ftp|ftps)\:\/\/)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,4}(\/\S*)?\b/ig;
-      
+
       while((m = re.exec(this.tweet)) !== null){
         if(m.index === re.lastIndex){
           re.lastIndex++
@@ -200,12 +200,11 @@ export default {
         if(!link.match(/^http/)){
           link = 'http://' + links[links.length - 1]
         }
-
-        var check = domains.indexOf(uri.parse(link,true).host)
-
+        var check = this.shortenlinks.indexOf(link)
         if(check < 0 ){
           this.$http.post('shorten',{ link : link}).then(function(response){
               self.tweet = self.tweet.replace(links[links.length - 1],response.data.data.url)
+              self.shortenlinks.push(response.data.data.url)
           })
         }
       }
