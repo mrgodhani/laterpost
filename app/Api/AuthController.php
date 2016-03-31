@@ -177,17 +177,7 @@ class AuthController extends BaseController
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]);
-        $credentials = $request->only('email','password','password_confirmation','token');
-        $response = Password::reset($credentials,function($user,$password){
-            $this->resetPassword($user,$password);
-        });
-        switch($response)
-        {
-            case Password::PASSWORD_RESET:
-                return (new Response(['message' => trans($response)],200))->header('Content-Type','application/json');
-                break;
-            default:
-                break;
-        }
+        $this->userService->updatePasswordByEmail($request->get('email'),$request->get('password'));
+        return (new Response(['message' => "Password updated successfully"],200))->header('Content-Type','application/json');
     }
 }

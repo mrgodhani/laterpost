@@ -52,6 +52,16 @@ class UserService
     }
 
     /**
+     * Update password by email
+     * @param $email
+     * @param $password
+     */
+    public function updatePasswordByEmail($email,$password)
+    {
+        $this->userRepo->update(['password' => Hash::make($password)],$email,'email');
+    }
+
+    /**
      * Update Email
      * @param $email
      */
