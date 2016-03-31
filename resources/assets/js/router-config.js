@@ -8,6 +8,7 @@ import General  from './components/views/settings/general.vue'
 import Accounts from './components/views/settings/accounts.vue'
 import Shorteners from './components/views/settings/shorteners.vue'
 import Forget from './components/views/auth/forget.vue'
+import ResetPass from './components/views/auth/reset.vue'
 
 export function configRouter (router) {
 
@@ -16,7 +17,7 @@ export function configRouter (router) {
       component: Dashboard,
       auth: true,
       subRoutes: {
-        '/settings':{
+        '/settings': {
           component: Settings,
           subRoutes: {
             '/accounts': {
@@ -39,6 +40,9 @@ export function configRouter (router) {
       component: Auth,
       guest: true,
       subRoutes: {
+        '/password/reset/:token': {
+          component: ResetPass,
+        },
         '/login':{
           component: Login
         },

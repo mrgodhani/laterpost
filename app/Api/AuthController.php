@@ -143,33 +143,32 @@ class AuthController extends BaseController
     }
 
     /**
-     * Reset Password
+     * Request Reset Password
      * @param Request $request
+     * @return $this
      */
     public function reset(Request $request)
     {
-        $validate = Validator::make($request->all(),[
+       $this->validate($request,[
             'email' => 'required|email'
         ]);
-        if($validate->fails())
-        {
-            $this->response->error($validate->errors(),400);
-        }
         $response = Password::sendResetLink($request->only('email'),function(Message $message){
-            $message->subject($this->getEmailSubject());
+            $message->subject('Your Password Reset Link');
         });
-
-        switch($response) {
+        switch($response){
             case Password::RESET_LINK_SENT:
+                return (new Response(['message' => trans($response)],200))->header('Content-Type','application/json');
                 break;
             case Password::INVALID_USER:
+                return (new Response(['message' => trans($response)],400))->header('Content-Type','application/json');
                 break;
         }
     }
 
     /**
-     * Post Reset
+     * Reset password
      * @param Request $request
+     * @return $this
      */
     public function postReset(Request $request)
     {
@@ -178,9 +177,17 @@ class AuthController extends BaseController
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]);
-
         $credentials = $request->only('email','password','password_confirmation','token');
+        $response = Password::reset($credentials,function($user,$password){
+            $this->resetPassword($user,$password);
+        });
+        switch($response)
+        {
+            case Password::PASSWORD_RESET:
+                return (new Response(['message' => trans($response)],200))->header('Content-Type','application/json');
+                break;
+            default:
+                break;
+        }
     }
-
-
 }

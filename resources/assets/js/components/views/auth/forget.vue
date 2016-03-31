@@ -21,14 +21,20 @@
 export default {
   data(){
     return {
-      email: null
+      user: {
+        email : null
+      }
     }
   },
   methods: {
     resetPass(){
-      if(this.email === null)
+      if(this.user.email === null)
       {
         UIkit.notify('Email is required.')
+      } else {
+        this.$http.post('reset',this.user).then(function(response){
+            UIkit.notify(response.data.message)
+        })
       }
     }
   }

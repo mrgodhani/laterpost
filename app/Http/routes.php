@@ -36,6 +36,7 @@ $api->version('v1', function ($api) {
     $api->post('register','LaterPost\Api\AuthController@register');
     $api->get('refresh','LaterPost\Api\AuthController@refresh');
     $api->post('reset','LaterPost\Api\AuthController@reset');
+    $api->post('passwordreset','LaterPost\Api\AuthController@postReset');
     $api->group(['middleware' => 'api.auth'],function($api){
         $api->get('users/current','LaterPost\Api\UserController@index');
         $api->delete('users','LaterPost\Api\UserController@destroy');
