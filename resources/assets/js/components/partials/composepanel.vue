@@ -48,6 +48,7 @@
 <script>
 import _ from 'lodash'
 import { addPost } from '../../vuex/actions'
+import uri from 'url'
 
 export default {
   vuex: {
@@ -183,7 +184,9 @@ export default {
       var m
       var self = this
       var links = []
+      var domains = ['bit.ly','bitly.com','j.mp']
       var re = /((http|https|ftp|ftps)\:\/\/)?[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,4}(\/\S*)?\b/ig;
+      
       while((m = re.exec(this.tweet)) !== null){
         if(m.index === re.lastIndex){
           re.lastIndex++
@@ -197,9 +200,14 @@ export default {
         if(!link.match(/^http/)){
           link = 'http://' + links[links.length - 1]
         }
-        this.$http.post('shorten',{ link : link}).then(function(response){
-            self.tweet = self.tweet.replace(links[links.length - 1],response.data.data.url)
-        })
+
+        var check = domains.indexOf(uri.parse(link,true).host)
+
+        if(check < 0 ){
+          this.$http.post('shorten',{ link : link}).then(function(response){
+              self.tweet = self.tweet.replace(links[links.length - 1],response.data.data.url)
+          })
+        }
       }
     }
   }

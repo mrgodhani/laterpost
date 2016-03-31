@@ -54,6 +54,7 @@ export default {
         this.$http.post('passwordreset',this.user).then(function(response){
               UIkit.notify(response.data.message)
         });
+        this.$route.router.go('/auth/login');
     }
   }
 }
