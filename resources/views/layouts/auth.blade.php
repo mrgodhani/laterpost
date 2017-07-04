@@ -14,6 +14,7 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <script src="https://use.fontawesome.com/91b2e19ed9.js"></script>
 </head>
 <body>
 <!--[if lte IE 11]>

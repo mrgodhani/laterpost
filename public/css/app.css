@@ -1402,7 +1402,7 @@ html {
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "apple-system", "Open Sans", sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: #636b6f;
@@ -7499,7 +7499,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Open Sans", sans-serif;
+  font-family: "apple-system", "Open Sans", sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -7633,7 +7633,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "apple-system", "Open Sans", sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -8348,5 +8348,76 @@ button.close {
   .hidden-print {
     display: none !important;
   }
+}
+
+.btn-twitter {
+  background: #00aced;
+  color: white;
+}
+
+.login {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding-top: 70px;
+}
+
+.login .login__box {
+  width: 330px;
+}
+
+.login .login__box .forgot {
+  font-weight: 700;
+}
+
+.login .login__box .have-account {
+  font-weight: 700;
+}
+
+.login .login__box .form-control {
+  background: #f3f3f3;
+  border: none;
+  color: #666;
+  padding: 0 16px;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  height: 46px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.login .login__box .btn {
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: 0px;
+}
+
+.login .login__box h5.or {
+  position: relative;
+  text-align: center;
+}
+
+.login .login__box h5.or span {
+  background: #fff;
+  padding: 0 15px;
+  position: relative;
+  z-index: 1;
+}
+
+.login .login__box h5.or:before {
+  background: #ddd;
+  content: "";
+  display: block;
+  height: 1px;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+}
+
+.login .login__box h5.or:before {
+  left: 0;
 }
 
