@@ -14,3 +14,12 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+
+Route::any('/app/{path?}', function() {
+    return view('app');
+})->middleware('auth')->where('path', '.+');
