@@ -44,6 +44,9 @@ class LoginController extends Controller
      */
     public function signupAccount()
     {
+        if(!session('twitter')) {
+            return redirect('/login');
+        }
         return view('auth.signup');
     }
 
@@ -62,7 +65,8 @@ class LoginController extends Controller
     public function twitterCallback()
     {
         $user = Socialite::driver('twitter')->user();
-        dd($user);
+        session(['twitter' => $user]);
+        return redirect('/auth/signup');
     }
 
 
