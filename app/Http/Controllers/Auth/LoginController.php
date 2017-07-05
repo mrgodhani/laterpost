@@ -44,6 +44,7 @@ class LoginController extends Controller
      */
     public function signupAccount()
     {
+        // Check if there is session data. If not then redirect them back to Login
         if(!session('twitter')) {
             return redirect('/login');
         }
