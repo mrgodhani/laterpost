@@ -2,6 +2,7 @@
 
 namespace Laterpost\Http\Controllers\Auth;
 
+use Laravel\Socialite\Facades\Socialite;
 use Laterpost\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -35,5 +36,29 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Redirect to Twitter
+     * @return mixed
+     */
+    public function twitterRedirect()
+    {
+        return Socialite::driver('twitter')->redirect();
+    }
+
+    /**
+     *  Twitter Callback
+     */
+    public function twitterCallback()
+    {
+        $user = Socialite::driver('twitter')->user();
+        dd($user);
+    }
+
+
+    public function bitlyRedirect()
+    {
+
     }
 }

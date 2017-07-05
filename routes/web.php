@@ -19,6 +19,11 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/auth/twitter', 'Auth\LoginController@twitterRedirect');
+Route::get('/auth/twitter/callback','Auth\LoginController@twitterCallback');
+
+Route::get('/auth/bitly', 'Auth\LoginController@bitlyRedirect');
+Route::get('/auth/bitly/callback', 'Auth\LoginController@bitlyCallback');
 
 Route::any('/app/{path?}', function() {
     return view('app');
