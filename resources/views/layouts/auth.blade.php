@@ -16,13 +16,16 @@
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <script src="https://use.fontawesome.com/91b2e19ed9.js"></script>
 </head>
-<body>
+<body class="auth">
 <!--[if lte IE 11]>
 <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
     your browser</a> to improve your experience and security.</p>
 <![endif]-->
 <div id="app">
     <nav class="navbar navbar-default navbar-static-top">
+        <div class="nav-header">
+            <a class="navbar-brand brand-logo" href="#">laterpost</a>
+        </div>
     </nav>
     @yield('content')
 </div>

@@ -1,8 +1,32 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .btn-twitter {
   background: #00aced;
   color: white;
   &:hover,
   &:focus {
     color: white;
+  }
+}
+
+.brand-logo {
+  font-family: 'Pacifico', cursive;
+  font-size: 25px;
+  color: black;
+  letter-spacing:1px;
+}
+
+.auth {
+  .nav-header {
+    float: left;
+    padding: 15px;
+    text-align: center;
+    width: 100%;
+  }
+  .navbar-brand {
+    float:none;
   }
 }

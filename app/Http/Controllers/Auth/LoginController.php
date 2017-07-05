@@ -39,6 +39,15 @@ class LoginController extends Controller
     }
 
     /**
+     * Sign up view only shown if it comes via Login for Twitter first time.
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function signupAccount()
+    {
+        return view('auth.signup');
+    }
+
+    /**
      * Redirect to Twitter
      * @return mixed
      */
@@ -57,8 +66,21 @@ class LoginController extends Controller
     }
 
 
+    /**
+     * Redirect to  Bitly
+     * @return mixed
+     */
     public function bitlyRedirect()
     {
+        return Socialite::with('bitly')->redirect();
+    }
 
+    /**
+     *  Bitly Callback
+     */
+    public function bitlyCallback()
+    {
+        $user = Socialite::with('bitly')->user();
+        dd($user);
     }
 }

@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans);@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Open+Sans|Pacifico);@charset "UTF-8";
 
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
@@ -1402,7 +1402,7 @@ html {
 }
 
 body {
-  font-family: "apple-system", "Open Sans", sans-serif;
+  font-family: "apple-system", Open Sans, sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: #636b6f;
@@ -7499,7 +7499,7 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "apple-system", "Open Sans", sans-serif;
+  font-family: "apple-system", Open Sans, sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -7633,7 +7633,7 @@ button.close {
   display: none;
   max-width: 276px;
   padding: 1px;
-  font-family: "apple-system", "Open Sans", sans-serif;
+  font-family: "apple-system", Open Sans, sans-serif;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
@@ -8350,6 +8350,11 @@ button.close {
   }
 }
 
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .btn-twitter {
   background: #00aced;
   color: white;
@@ -8358,6 +8363,24 @@ button.close {
 .btn-twitter:hover,
 .btn-twitter:focus {
   color: white;
+}
+
+.brand-logo {
+  font-family: 'Pacifico', cursive;
+  font-size: 25px;
+  color: black;
+  letter-spacing: 1px;
+}
+
+.auth .nav-header {
+  float: left;
+  padding: 15px;
+  text-align: center;
+  width: 100%;
+}
+
+.auth .navbar-brand {
+  float: none;
 }
 
 .login {
