@@ -1,8 +1,8 @@
 @extends('layouts.auth')
 
 @section('content')
-<div class="container">
     <div class="login">
+<div class="container=fluid">
         <div class="login__box">
             <form class="form" method="POST" action="{{ route('password.email') }}">
                 {{ csrf_field() }}
