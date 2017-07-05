@@ -13,7 +13,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <script src="https://use.fontawesome.com/91b2e19ed9.js"></script>
 </head>
 <body>
@@ -81,9 +81,10 @@
             </div>
         </div>
     </nav>
-
     @yield('content')
 </div>
-<script src="{{ asset('js/app.js') }}"></script>
+<script src="{{ mix('js/manifest.js') }}"></script>
+<script src="{{ mix('js/vendor.js') }}"></script>
+<script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>

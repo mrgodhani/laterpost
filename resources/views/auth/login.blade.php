@@ -1,8 +1,8 @@
 @extends('layouts.auth')
 
 @section('content')
-    <div class="container">
-        <div class="login">
+    <div class="login">
+    <div class="container-fluid">
             <div class="login__box">
                 <form class="form" method="POST" action="{{ route('login') }}">
                     {{ csrf_field() }}
@@ -18,7 +18,7 @@
                         <label class="sr-only" for="email">Email</label>
                         <input class="form-control" id="email" name="email" type="email" placeholder="Email">
                         @if ($errors->has('email'))
-                            <span class="help-block">
+                            <span class="help-block error">
                                 <strong>{{ $errors->first('email') }}</strong>
                             </span>
                         @endif
@@ -28,7 +28,7 @@
                         <input class="form-control" id="password" name="password" type="password"
                                placeholder="Password">
                         @if ($errors->has('password'))
-                            <span class="help-block">
+                            <span class="help-block error">
                                 <strong>{{ $errors->first('password') }}</strong>
                             </span>
                         @endif

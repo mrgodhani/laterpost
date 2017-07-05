@@ -1,4 +1,8 @@
 .btn-twitter {
   background: #00aced;
   color: white;
+  &:hover,
+  &:focus {
+    color: white;
+  }
 }

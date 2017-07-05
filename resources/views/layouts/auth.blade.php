@@ -22,8 +22,9 @@
     your browser</a> to improve your experience and security.</p>
 <![endif]-->
 <div id="app">
+    <nav class="navbar navbar-default navbar-static-top">
+    </nav>
     @yield('content')
 </div>
-<script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
