@@ -8390,7 +8390,7 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding-top: 70px;
+  padding-top: 25px;
   position: fixed;
   min-width: 100%;
   min-height: 100%;

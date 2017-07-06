@@ -32,11 +32,33 @@ class RegisterController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @return void
      */
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    /**
+     * Sign up view only shown if it comes via Login for Twitter first time.
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function signupAccount()
+    {
+        // Check if there is session data. If not then redirect them back to Login
+        if (!session('twitter')) {
+            return redirect('/login');
+        }
+        return view('auth.signup');
+    }
+
+    /**
+     *  Twitter Sign In (If account not available)
+     *  Create User
+     */
+
+    public function registerUser()
+    {
+
     }
 
     /**

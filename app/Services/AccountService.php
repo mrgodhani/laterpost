@@ -18,4 +18,19 @@ class AccountService
     {
         $this->accountRepo = $accountRepo;
     }
+
+    /**
+     * Check if Twitter Account Already Exists
+     * @param $profile_id
+     * @return bool
+     */
+    public function checkIfTwitterAccountExists($profile_id)
+    {
+        $account = $this->accountRepo->findBy('profile_id',$profile_id);
+        if(count($account) > 0) {
+            return $account->user_id;
+        } else {
+            return false;
+        }
+    }
 }

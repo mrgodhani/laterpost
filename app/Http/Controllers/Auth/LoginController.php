@@ -2,12 +2,15 @@
 
 namespace Laterpost\Http\Controllers\Auth;
 
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laterpost\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Laterpost\Services\AccountService;
 
 class LoginController extends Controller
 {
+
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -27,28 +30,20 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '/app';
+    /**
+     * @var AccountService
+     */
+    private $accountService;
 
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @param AccountService $accountService
      */
-    public function __construct()
+    public function __construct(AccountService $accountService)
     {
         $this->middleware('guest')->except('logout');
-    }
-
-    /**
-     * Sign up view only shown if it comes via Login for Twitter first time.
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function signupAccount()
-    {
-        // Check if there is session data. If not then redirect them back to Login
-        if(!session('twitter')) {
-            return redirect('/login');
-        }
-        return view('auth.signup');
+        $this->accountService = $accountService;
     }
 
     /**
@@ -66,6 +61,11 @@ class LoginController extends Controller
     public function twitterCallback()
     {
         $user = Socialite::driver('twitter')->user();
+        $user_id = $this->accountService->checkIfTwitterAccountExists($user->id);
+        if ($user_id) {
+            Auth::loginUsingId($user_id);
+            return redirect('/app');
+        }
         session(['twitter' => $user]);
         return redirect('/auth/signup');
     }

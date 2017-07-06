@@ -25,7 +25,8 @@ Route::get('/auth/twitter/callback','Auth\LoginController@twitterCallback');
 Route::get('/auth/bitly', 'Auth\LoginController@bitlyRedirect');
 Route::get('/auth/bitly/callback', 'Auth\LoginController@bitlyCallback');
 
-Route::get('/auth/signup','Auth\LoginController@signupAccount');
+Route::get('/auth/signup','Auth\RegisterController@signupAccount');
+Route::post('/auth/signup','Auth\RegisterController@registerUser');
 
 Route::any('/app/{path?}', function() {
     return view('app');
