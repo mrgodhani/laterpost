@@ -7,7 +7,7 @@
                 <form class="form" method="POST" action="{{ route('register') }}">
                     {{ csrf_field() }}
                     <div class="form-group">
-                        <a class="btn btn-block btn-twitter">
+                        <a href="/auth/twitter" class="btn btn-block btn-twitter">
                             Sign in with Twitter
                         </a>
                     </div>
