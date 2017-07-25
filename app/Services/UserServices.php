@@ -18,4 +18,9 @@ class UserServices
     {
         $this->userRepo = $userRepo;
     }
+
+    public function createUser($user)
+    {
+        
+    }
 }

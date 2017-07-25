@@ -4,7 +4,7 @@
     <div class="login">
         <div class="container-fluid">
             <div class="login__box">
-                <form class="form" method="POST" action="{{ route('register') }}">
+                <form class="form" method="POST" action="/auth/signup">
                     {{ csrf_field() }}
                     <div class="form-group">
                         <h3>Welcome! <br/><small>Almost done with account setup</small></h3>

@@ -2,6 +2,9 @@
 
 namespace Laterpost\Http\Controllers\Auth;
 
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\Request;
+use Laterpost\Services\AccountService;
 use Laterpost\User;
 use Laterpost\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -28,14 +31,19 @@ class RegisterController extends Controller
      * @var string
      */
     protected $redirectTo = '/app';
+    /**
+     * @var AccountService
+     */
+    private $accountService;
 
     /**
      * Create a new controller instance.
-     *
+     * @param AccountService $accountService
      */
-    public function __construct()
+    public function __construct(AccountService $accountService)
     {
         $this->middleware('guest');
+        $this->accountService = $accountService;
     }
 
     /**
@@ -54,11 +62,28 @@ class RegisterController extends Controller
     /**
      *  Twitter Sign In (If account not available)
      *  Create User
+     * @param Request $request
+     * @return
      */
 
-    public function registerUser()
+    public function registerUser(Request $request)
     {
+        $this->validator($request->all())->validate();
+        $twitter_data = $request->session()->get('twitter');
 
+        try {
+            $user = $this->create($request->all());
+            event(new Registered($user));
+            $this->accountService->addAccount($twitter_data,'twitter',$user->id);
+            $request->session()->forget('twitter');
+            $this->guard()->login($user);
+
+            return $this->registered($request, $user)
+                ?: redirect($this->redirectPath());
+
+        } catch (\Exception $e) {
+            return redirect('/auth/signup')->with('error_message', $e->getMessage());
+        }
     }
 
     /**

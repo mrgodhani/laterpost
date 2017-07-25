@@ -2,6 +2,7 @@
 
 namespace Laterpost\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laterpost\Http\Controllers\Controller;
@@ -58,7 +59,7 @@ class LoginController extends Controller
     /**
      *  Twitter Callback
      */
-    public function twitterCallback()
+    public function twitterCallback(Request $request)
     {
         $user = Socialite::driver('twitter')->user();
         $user_id = $this->accountService->checkIfTwitterAccountExists($user->id);
@@ -66,7 +67,7 @@ class LoginController extends Controller
             Auth::loginUsingId($user_id);
             return redirect('/app');
         }
-        session(['twitter' => $user]);
+        $request->session()->put(['twitter' => $user]);
         return redirect('/auth/signup');
     }
 
