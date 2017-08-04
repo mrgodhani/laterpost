@@ -5,6 +5,7 @@
   position:fixed;
   min-width: 100%;
   min-height: 100%;
+
   .login__box {
     width: 330px;
     .forgot {
@@ -58,5 +59,10 @@
     .error {
       color: red;
     }
+  }
+
+  .bigger--box {
+    max-width: 360px;
+    width: 100%;
   }
 }

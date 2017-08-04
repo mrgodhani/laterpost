@@ -43,7 +43,6 @@ class LoginController extends Controller
      */
     public function __construct(AccountService $accountService)
     {
-        $this->middleware('guest')->except('logout');
         $this->accountService = $accountService;
     }
 
@@ -57,18 +56,42 @@ class LoginController extends Controller
     }
 
     /**
+     * Redirect to Dashboard or redirect to get started
+     * @return string
+     */
+    public function redirectPath()
+    {
+        $twitter = $this->accountService->checkIfTwitterAccountExists(Auth::user()->id);
+        if($twitter) {
+            return '/app';
+        }
+        return '/getstarted';
+    }
+
+
+    /**
      *  Twitter Callback
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function twitterCallback(Request $request)
     {
         $user = Socialite::driver('twitter')->user();
         $user_id = $this->accountService->checkIfTwitterAccountExists($user->id);
+
         if ($user_id) {
+            $this->accountService->updateAccount($user, Auth::user()->id);
             Auth::loginUsingId($user_id);
             return redirect('/app');
         }
-        $request->session()->put(['twitter' => $user]);
-        return redirect('/auth/signup');
+
+        if(Auth::check() && $user_id !== false) {
+            $this->accountService->addAccount($user,'twitter',Auth::user()->id);
+            return redirect('/app');
+        } else {
+            $request->session()->put(['twitter' => $user]);
+            return redirect('/auth/signup');
+        }
     }
 
 

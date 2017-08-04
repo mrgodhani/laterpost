@@ -19,6 +19,20 @@ class UserServices
         $this->userRepo = $userRepo;
     }
 
+
+    /**
+     * Check if user has Twitter accounts
+     * @param $user_id
+     * @return bool
+     */
+    public function userHasTwitter($user_id) {
+        $user = $this->userRepo->find($user_id);
+        if($user->accounts->count() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public function createUser($user)
     {
         

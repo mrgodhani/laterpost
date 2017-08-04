@@ -53,4 +53,16 @@ class AccountService
             'user_id' => $user_id
         ]);
     }
+
+    /**
+     * Update existing twitter account
+     * @param $data
+     * @param $user_id
+     * @return mixed
+     */
+    public function updateAccount($data, $user_id) {
+        return $this->accountRepo->update([
+            'user_id' => $user_id
+        ], $data->id,"profile_id");
+    }
 }

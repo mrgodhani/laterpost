@@ -4,12 +4,18 @@ namespace Laterpost\Http\Controllers\Auth;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laterpost\Services\AccountService;
+use Laterpost\Services\UserServices;
 use Laterpost\User;
 use Laterpost\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 
+/**
+ * Class RegisterController
+ * @package Laterpost\Http\Controllers\Auth
+ */
 class RegisterController extends Controller
 {
     /*
@@ -30,21 +36,29 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/app';
+    protected $redirectTo = '/getstarted';
     /**
      * @var AccountService
      */
     private $accountService;
+    /**
+     * @var UserServices
+     */
+    private $userServices;
 
     /**
      * Create a new controller instance.
      * @param AccountService $accountService
+     * @param UserServices $userServices
      */
-    public function __construct(AccountService $accountService)
+    public function __construct(AccountService $accountService, UserServices $userServices)
     {
-        $this->middleware('guest');
         $this->accountService = $accountService;
+        $this->userServices = $userServices;
     }
+
+
+
 
     /**
      * Sign up view only shown if it comes via Login for Twitter first time.
@@ -60,10 +74,25 @@ class RegisterController extends Controller
     }
 
     /**
+     * Get started view page
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function getStarted()
+    {
+        return view('auth.getstarted');
+    }
+
+    public function redirectPath()
+    {
+        return '/getstarted';
+    }
+
+
+    /**
      *  Twitter Sign In (If account not available)
      *  Create User
      * @param Request $request
-     * @return
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
 
     public function registerUser(Request $request)
@@ -79,7 +108,7 @@ class RegisterController extends Controller
             $this->guard()->login($user);
 
             return $this->registered($request, $user)
-                ?: redirect($this->redirectPath());
+                ?: redirect('/app');
 
         } catch (\Exception $e) {
             return redirect('/auth/signup')->with('error_message', $e->getMessage());

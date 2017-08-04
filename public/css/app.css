@@ -8456,3 +8456,8 @@ body {
   color: red;
 }
 
+.login .bigger--box {
+  max-width: 360px;
+  width: 100%;
+}
+

@@ -26,6 +26,7 @@ Route::get('/auth/bitly', 'Auth\LoginController@bitlyRedirect');
 Route::get('/auth/bitly/callback', 'Auth\LoginController@bitlyCallback');
 
 Route::get('/auth/signup','Auth\RegisterController@signupAccount');
+Route::get('/getstarted','Auth\RegisterController@getStarted')->middleware('auth');
 Route::post('/auth/signup','Auth\RegisterController@registerUser');
 
 Route::any('/app/{path?}', function() {
