@@ -61,8 +61,7 @@ class LoginController extends Controller
      */
     public function redirectPath()
     {
-        $twitter = $this->accountService->checkIfTwitterAccountExists(Auth::user()->id);
-        if($twitter) {
+        if(count(Auth::user()->accounts) > 0) {
             return '/app';
         }
         return '/getstarted';
@@ -80,12 +79,12 @@ class LoginController extends Controller
         $user_id = $this->accountService->checkIfTwitterAccountExists($user->id);
 
         if ($user_id) {
-            $this->accountService->updateAccount($user, Auth::user()->id);
+            $this->accountService->updateAccount($user, $user_id);
             Auth::loginUsingId($user_id);
             return redirect('/app');
         }
 
-        if(Auth::check() && $user_id !== false) {
+        if(Auth::check()) {
             $this->accountService->addAccount($user,'twitter',Auth::user()->id);
             return redirect('/app');
         } else {

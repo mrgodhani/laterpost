@@ -12,6 +12,8 @@ let mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
-    .extract(['vue','vuex','axios','lodash'])
+    .extract(['vue','vuex','axios','lodash']);
 
 mix.sass('resources/assets/sass/app.scss', 'public/css');
+
+mix.version();
