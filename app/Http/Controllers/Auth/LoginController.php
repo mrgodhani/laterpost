@@ -2,16 +2,15 @@
 
 namespace Laterpost\Http\Controllers\Auth;
 
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Laterpost\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Laterpost\Services\AccountService;
 
 class LoginController extends Controller
 {
-
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -47,7 +46,8 @@ class LoginController extends Controller
     }
 
     /**
-     * Redirect to Twitter
+     * Redirect to Twitter.
+     *
      * @return mixed
      */
     public function twitterRedirect()
@@ -56,21 +56,24 @@ class LoginController extends Controller
     }
 
     /**
-     * Redirect to Dashboard or redirect to get started
+     * Redirect to Dashboard or redirect to get started.
+     *
      * @return string
      */
     public function redirectPath()
     {
-        if(count(Auth::user()->accounts) > 0) {
+        if (count(Auth::user()->accounts) > 0) {
             return '/app';
         }
+
         return '/getstarted';
     }
 
-
     /**
-     *  Twitter Callback
+     *  Twitter Callback.
+     *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function twitterCallback(Request $request)
@@ -81,21 +84,24 @@ class LoginController extends Controller
         if (Auth::check() && $user_id) {
             $this->accountService->updateAccount($user, Auth::user()->id);
             Auth::loginUsingId($user_id);
+
             return redirect('/app');
         }
 
-        if(Auth::check() && !$user_id) {
-            $this->accountService->addAccount($user,'twitter',Auth::user()->id);
+        if (Auth::check() && !$user_id) {
+            $this->accountService->addAccount($user, 'twitter', Auth::user()->id);
+
             return redirect('/app');
         } else {
             $request->session()->put(['twitter' => $user]);
+
             return redirect('/auth/signup');
         }
     }
 
-
     /**
-     * Redirect to  Bitly
+     * Redirect to  Bitly.
+     *
      * @return mixed
      */
     public function bitlyRedirect()
@@ -104,7 +110,7 @@ class LoginController extends Controller
     }
 
     /**
-     *  Bitly Callback
+     *  Bitly Callback.
      */
     public function bitlyCallback()
     {

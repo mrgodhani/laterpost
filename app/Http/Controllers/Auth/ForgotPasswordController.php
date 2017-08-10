@@ -2,8 +2,8 @@
 
 namespace Laterpost\Http\Controllers\Auth;
 
-use Laterpost\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+use Laterpost\Http\Controllers\Controller;
 
 class ForgotPasswordController extends Controller
 {

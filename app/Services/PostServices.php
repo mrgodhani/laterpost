@@ -1,7 +1,7 @@
-<?php namespace Laterpost\Services;
+<?php
 
+namespace Laterpost\Services;
 
 class PostServices
 {
-
 }
