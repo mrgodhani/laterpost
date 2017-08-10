@@ -78,13 +78,13 @@ class LoginController extends Controller
         $user = Socialite::driver('twitter')->user();
         $user_id = $this->accountService->checkIfTwitterAccountExists($user->id);
 
-        if ($user_id) {
-            $this->accountService->updateAccount($user, $user_id);
+        if (Auth::check() && $user_id) {
+            $this->accountService->updateAccount($user, Auth::user()->id);
             Auth::loginUsingId($user_id);
             return redirect('/app');
         }
 
-        if(Auth::check()) {
+        if(Auth::check() && !$user_id) {
             $this->accountService->addAccount($user,'twitter',Auth::user()->id);
             return redirect('/app');
         } else {
