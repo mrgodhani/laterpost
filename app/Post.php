@@ -5,12 +5,10 @@ namespace Laterpost;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Post
- * @package Laterpost
+ * Class Post.
  */
 class Post extends Model
 {
-
     /**
      * @var string
      */
@@ -25,11 +23,12 @@ class Post extends Model
         'mimetype',
         'scheduled_at',
         'profile_id',
-        'account_id'
+        'account_id',
     ];
 
     /**
-     * Belongs to User
+     * Belongs to User.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()

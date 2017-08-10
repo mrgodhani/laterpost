@@ -3,18 +3,17 @@
 namespace Laterpost\Http\Controllers\Auth;
 
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Laterpost\Http\Controllers\Controller;
 use Laterpost\Services\AccountService;
 use Laterpost\Services\UserServices;
 use Laterpost\User;
-use Laterpost\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
 
 /**
- * Class RegisterController
- * @package Laterpost\Http\Controllers\Auth
+ * Class RegisterController.
  */
 class RegisterController extends Controller
 {
@@ -48,8 +47,9 @@ class RegisterController extends Controller
 
     /**
      * Create a new controller instance.
+     *
      * @param AccountService $accountService
-     * @param UserServices $userServices
+     * @param UserServices   $userServices
      */
     public function __construct(AccountService $accountService, UserServices $userServices)
     {
@@ -57,11 +57,9 @@ class RegisterController extends Controller
         $this->userServices = $userServices;
     }
 
-
-
-
     /**
      * Sign up view only shown if it comes via Login for Twitter first time.
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function signupAccount()
@@ -70,11 +68,13 @@ class RegisterController extends Controller
         if (!session('twitter')) {
             return redirect('/login');
         }
+
         return view('auth.signup');
     }
 
     /**
-     * Get started view page
+     * Get started view page.
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function getStarted()
@@ -87,14 +87,14 @@ class RegisterController extends Controller
         return '/getstarted';
     }
 
-
     /**
      *  Twitter Sign In (If account not available)
-     *  Create User
+     *  Create User.
+     *
      * @param Request $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-
     public function registerUser(Request $request)
     {
         $this->validator($request->all())->validate();
@@ -103,13 +103,12 @@ class RegisterController extends Controller
         try {
             $user = $this->create($request->all());
             event(new Registered($user));
-            $this->accountService->addAccount($twitter_data,'twitter',$user->id);
+            $this->accountService->addAccount($twitter_data, 'twitter', $user->id);
             $request->session()->forget('twitter');
             $this->guard()->login($user);
 
             return $this->registered($request, $user)
                 ?: redirect('/app');
-
         } catch (\Exception $e) {
             return redirect('/auth/signup')->with('error_message', $e->getMessage());
         }
@@ -118,14 +117,15 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
     }
@@ -133,14 +133,15 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return User
      */
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name'     => $data['name'],
+            'email'    => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
     }

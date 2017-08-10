@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: mgodhani
  * Date: 2017-07-05
- * Time: 2:27 PM
+ * Time: 2:27 PM.
  */
 
 namespace Laterpost\Repositories;
-
 
 use Bosnadev\Repositories\Eloquent\Repository;
 
@@ -17,5 +16,4 @@ class PostRepository extends Repository
     {
         return 'Laterpost\Post';
     }
-
 }

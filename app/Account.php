@@ -5,12 +5,10 @@ namespace Laterpost;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Account
- * @package Laterpost
+ * Class Account.
  */
 class Account extends Model
 {
-
     /**
      * @var string
      */
@@ -26,14 +24,16 @@ class Account extends Model
         'username',
         'avatar',
         'profile_id',
-        'user_id'
+        'user_id',
     ];
 
     /**
-     * Belongs to User
+     * Belongs to User.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('Laterpost\User');
     }
 }

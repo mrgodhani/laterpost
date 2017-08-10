@@ -20,15 +20,15 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/auth/twitter', 'Auth\LoginController@twitterRedirect');
-Route::get('/auth/twitter/callback','Auth\LoginController@twitterCallback');
+Route::get('/auth/twitter/callback', 'Auth\LoginController@twitterCallback');
 
 Route::get('/auth/bitly', 'Auth\LoginController@bitlyRedirect');
 Route::get('/auth/bitly/callback', 'Auth\LoginController@bitlyCallback');
 
-Route::get('/auth/signup','Auth\RegisterController@signupAccount');
-Route::get('/getstarted','Auth\RegisterController@getStarted')->middleware('auth');
-Route::post('/auth/signup','Auth\RegisterController@registerUser');
+Route::get('/auth/signup', 'Auth\RegisterController@signupAccount');
+Route::get('/getstarted', 'Auth\RegisterController@getStarted')->middleware('auth');
+Route::post('/auth/signup', 'Auth\RegisterController@registerUser');
 
-Route::any('/app/{path?}', function() {
+Route::any('/app/{path?}', function () {
     return view('app');
 })->middleware('auth')->where('path', '.+');
