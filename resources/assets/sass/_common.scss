@@ -19,6 +19,13 @@ body {
   letter-spacing:1px;
 }
 
+.brand-logo-white {
+  font-family: 'Pacifico', cursive;
+  font-size: 22px;
+  color: white !important;
+  letter-spacing:1px;
+}
+
 .auth {
   .nav-header {
     float: left;
@@ -29,4 +36,32 @@ body {
   .navbar-brand {
     float:none;
   }
+}
+
+
+.navbar-default .navbar-nav > li > a {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+
+  &:hover,
+  &:focus {
+    color: #fff;
+  }
+}
+
+.navbar-default .navbar-toggle {
+  border-color: transparent;
+
+  &:hover,
+  &:focus {
+    background: transparent;
+  }
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #fff;
+}
+
+.navbar-default-primary {
+  background: $brand-primary;
 }

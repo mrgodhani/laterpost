@@ -29,6 +29,5 @@ Route::get('/auth/signup', 'Auth\RegisterController@signupAccount');
 Route::get('/getstarted', 'Auth\RegisterController@getStarted')->middleware('auth');
 Route::post('/auth/signup', 'Auth\RegisterController@registerUser');
 
-Route::any('/app/{path?}', function () {
-    return view('app');
-})->middleware('auth')->where('path', '.+');
+
+Route::get('/app', 'AppController@index');
