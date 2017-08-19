@@ -29,5 +29,4 @@ Route::get('/auth/signup', 'Auth\RegisterController@signupAccount');
 Route::get('/getstarted', 'Auth\RegisterController@getStarted')->middleware('auth');
 Route::post('/auth/signup', 'Auth\RegisterController@registerUser');
 
-
 Route::get('/app', 'AppController@index');
