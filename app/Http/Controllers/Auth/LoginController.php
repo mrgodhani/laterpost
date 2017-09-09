@@ -84,16 +84,19 @@ class LoginController extends Controller
         if ((!Auth::check() || Auth::check()) && $user_id !== false) {
             Auth::loginUsingId($user_id);
             $this->accountService->updateAccount($user, Auth::user()->id);
+
             return redirect('/app');
         }
 
         if (Auth::check() && !$user_id) {
             $this->accountService->addAccount($user, 'twitter', Auth::user()->id);
+
             return redirect('/app');
         }
 
-        if(!Auth::check() && !$user_id) {
+        if (!Auth::check() && !$user_id) {
             $request->session()->put(['twitter' => $user]);
+
             return redirect('/auth/signup');
         }
     }

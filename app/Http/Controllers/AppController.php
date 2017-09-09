@@ -2,11 +2,8 @@
 
 namespace Laterpost\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class AppController extends Controller
 {
-
     /**
      * AppController constructor.
      */
@@ -15,9 +12,9 @@ class AppController extends Controller
         $this->middleware('auth');
     }
 
-
     /**
-     * Dashboard View
+     * Dashboard View.
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
