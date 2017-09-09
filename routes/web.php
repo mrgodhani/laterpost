@@ -31,3 +31,4 @@ Route::post('/auth/signup', 'Auth\RegisterController@registerUser');
 
 
 Route::get('/app', 'AppController@index');
+Route::get('/settings', 'SettingController@index');

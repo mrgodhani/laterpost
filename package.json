@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "moment": "^2.18.1",
+    "sass-mq": "^3.3.2",
     "vuex": "^2.3.1"
   }
 }

@@ -8355,6 +8355,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.brand-logo {
+  font-family: 'Pacifico', cursive;
+  font-size: 1.78571429em;
+  color: black !important;
+  letter-spacing: 1px;
+}
+
+.brand-logo-white {
+  font-family: 'Pacifico', cursive;
+  font-size: 1.57142857em;
+  color: white !important;
+  letter-spacing: 1px;
+}
+
 .btn-twitter {
   background: #00aced;
   color: white;
@@ -8365,34 +8379,9 @@ body {
   color: white;
 }
 
-.brand-logo {
-  font-family: 'Pacifico', cursive;
-  font-size: 25px;
-  color: black !important;
-  letter-spacing: 1px;
-}
-
-.brand-logo-white {
-  font-family: 'Pacifico', cursive;
-  font-size: 22px;
-  color: white !important;
-  letter-spacing: 1px;
-}
-
-.auth .nav-header {
-  float: left;
-  padding: 15px;
-  text-align: center;
-  width: 100%;
-}
-
-.auth .navbar-brand {
-  float: none;
-}
-
 .navbar-default .navbar-nav > li > a {
   color: #fff;
-  font-size: 16px;
+  font-size: 1.14285714em;
   font-weight: 700;
 }
 
@@ -8425,14 +8414,14 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding-top: 25px;
+  padding-top: 1.78571429em;
   position: fixed;
   min-width: 100%;
   min-height: 100%;
 }
 
 .login .login__box {
-  width: 330px;
+  width: 23.57142857em;
 }
 
 .login .login__box .forgot {
@@ -8447,16 +8436,16 @@ body {
   background: #f3f3f3;
   border: none;
   color: #666;
-  padding: 0 16px;
+  padding: 0 1.14285714em;
   -webkit-box-shadow: none;
           box-shadow: none;
-  height: 46px;
-  font-size: 15px;
+  height: 3.28571429em;
+  font-size: 1.07142857em;
   font-weight: 500;
 }
 
 .login .login__box .btn {
-  font-size: 16px;
+  font-size: 1.14285714em;
   font-weight: 700;
   border-radius: 0px;
 }
@@ -8468,7 +8457,7 @@ body {
 
 .login .login__box h5.or span {
   background: #fff;
-  padding: 0 15px;
+  padding: 0 1.07142857em;
   position: relative;
   z-index: 1;
 }
@@ -8477,7 +8466,7 @@ body {
   background: #ddd;
   content: "";
   display: block;
-  height: 1px;
+  height: 0.07142857em;
   position: absolute;
   top: 50%;
   width: 100%;
@@ -8492,7 +8481,18 @@ body {
 }
 
 .login .bigger--box {
-  max-width: 360px;
+  max-width: 25.71428571em;
   width: 100%;
+}
+
+.auth .nav-header {
+  float: left;
+  padding: 1.07142857em;
+  text-align: center;
+  width: 100%;
+}
+
+.auth .navbar-brand {
+  float: none;
 }
 

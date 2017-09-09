@@ -1,4 +1,16 @@
 
+// Base Font Size
+$mq-base-font-size: 14px;
+
+// Breakpoints
+$mq-breakpoints: (
+        base: 0px,
+        mobile:  320px,
+        tablet:  747px,
+        desktop: 980px,
+        wide:    1200px
+);
+
 // Body
 $body-bg: #ffffff;
 

@@ -1,0 +1,26 @@
+.navbar-default .navbar-nav > li > a {
+  color: #fff;
+  font-size: mq-px2em(16px);
+  font-weight: 700;
+
+  &:hover,
+  &:focus {
+    color: #fff;
+  }
+}
+
+.navbar-default .navbar-toggle {
+  border-color: transparent;
+
+  &:hover,
+  &:focus {
+    background: transparent;
+  }
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #fff;
+}
+
+.navbar-default-primary {
+  background: $brand-primary;
+}

@@ -1,13 +1,13 @@
 .login {
   display: flex;
   justify-content: center;
-  padding-top: 25px;
+  padding-top: mq-px2em(25px);
   position:fixed;
   min-width: 100%;
   min-height: 100%;
 
   .login__box {
-    width: 330px;
+    width: mq-px2em(330px);
     .forgot {
       font-weight: 700;
     }
@@ -18,14 +18,14 @@
       background: #f3f3f3;
       border: none;
       color: #666;
-      padding: 0 16px;
+      padding: 0 mq-px2em(16px);
       box-shadow: none;
-      height: 46px;
-      font-size: 15px;
+      height: mq-px2em(46px);
+      font-size: mq-px2em(15px);
       font-weight: 500;
     }
     .btn {
-      font-size: 16px;
+      font-size: mq-px2em(16px);
       font-weight: 700;
       border-radius: 0px;
     }
@@ -37,7 +37,7 @@
 
     h5.or span {
       background: #fff;
-      padding: 0 15px;
+      padding: 0 mq-px2em(15px);
       position: relative;
       z-index: 1;
     }
@@ -46,7 +46,7 @@
       background: #ddd;
       content: "";
       display: block;
-      height: 1px;
+      height: mq-px2em(1px);
       position: absolute;
       top: 50%;
       width: 100%;
@@ -62,7 +62,7 @@
   }
 
   .bigger--box {
-    max-width: 360px;
+    max-width: mq-px2em(360px);
     width: 100%;
   }
 }

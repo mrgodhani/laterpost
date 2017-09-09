@@ -1,12 +1,24 @@
 
+// Mixins
+@import "node_modules/sass-mq/mq";
+
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Open+Sans|Pacifico");
 
-// Variables
-@import "variables";
+// Settings
+@import 'settings/global';
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
-@import 'common';
-@import 'login';
+// Elements
+@import "elements/body";
+
+// Components
+@import "components/logo";
+@import "components/buttons";
+@import "components/navbar";
+@import "components/login-box";
+
+// Pages
+@import "pages/auth";
