@@ -2,11 +2,10 @@
 
 namespace LaterPost\Jobs;
 
-use Illuminate\Support\Facades\Storage;
-use LaterPost\Jobs\Job;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use LaterPost\Services\TwitterService;
 
 class TwitterPost extends Job implements ShouldQueue
@@ -35,7 +34,7 @@ class TwitterPost extends Job implements ShouldQueue
      * @param $mime
      * @param $request
      */
-    public function __construct($media,$imagefile,$mime,$request)
+    public function __construct($media, $imagefile, $mime, $request)
     {
         $this->media = $media;
         $this->imagefile = $imagefile;
@@ -50,12 +49,12 @@ class TwitterPost extends Job implements ShouldQueue
      */
     public function handle(TwitterService $twitterService)
     {
-        if($this->media){
+        if ($this->media) {
             $file = Storage::disk('s3')->get($this->imagefile);
             $base64 = 'data:'.$this->mime.';base64,'.base64_encode($file);
         }
-        $twitterService->status_update($this->media ? true : false,$this->media ? $file : null,$this->media ? $base64 : null,$this->request);
-        if($this->media){
+        $twitterService->status_update($this->media ? true : false, $this->media ? $file : null, $this->media ? $base64 : null, $this->request);
+        if ($this->media) {
             $file = Storage::disk('s3')->delete($this->imagefile);
         }
     }

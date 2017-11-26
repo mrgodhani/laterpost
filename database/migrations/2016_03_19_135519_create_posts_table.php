@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreatePostsTable extends Migration
 {
@@ -15,9 +15,9 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('content');
-            $table->string('media_path')->nullable()->default(NULL);
-            $table->string('mimetype')->nullable()->default(NULL);
-            $table->timestamp('scheduled_at')->nullable()->default(NULL);
+            $table->string('media_path')->nullable()->default(null);
+            $table->string('mimetype')->nullable()->default(null);
+            $table->timestamp('scheduled_at')->nullable()->default(null);
             $table->string('profile_id');
             $table->integer('account_id')->unsigned()->index();
             $table->foreign('account_id')

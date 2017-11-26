@@ -2,9 +2,6 @@
 
 namespace LaterPost\Api;
 
-use Illuminate\Http\Request;
-
-use LaterPost\Http\Requests;
 use LaterPost\Services\AccountService;
 
 class AccountController extends BaseController
@@ -16,6 +13,7 @@ class AccountController extends BaseController
 
     /**
      * AccountController constructor.
+     *
      * @param AccountService $accountService
      */
     public function __construct(AccountService $accountService)
@@ -24,26 +22,27 @@ class AccountController extends BaseController
     }
 
     /**
-     * Delete Account
+     * Delete Account.
+     *
      * @param $id
      */
     public function deleteAccount($id)
     {
         try {
             $this->accountService->delete($id);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->response->errorBadRequest($e->getMessage());
         }
     }
 
     /**
-     * Delete or disconnect Bitly Account
+     * Delete or disconnect Bitly Account.
      */
     public function deleteBitly()
     {
         try {
             $this->accountService->deleteBitlyAccount();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->response->errorBadRequest($e->getMessage());
         }
     }

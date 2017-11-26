@@ -1,10 +1,12 @@
-<?php namespace LaterPost;
+<?php
+
+namespace LaterPost;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $table = "posts";
+    protected $table = 'posts';
 
     /**
      * The attributes that are mass assignable.
@@ -17,11 +19,12 @@ class Post extends Model
         'mimetype',
         'scheduled_at',
         'profile_id',
-        'account_id'
+        'account_id',
     ];
 
     /**
-     * Belongs to account
+     * Belongs to account.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function account()

@@ -2,8 +2,8 @@
 
 namespace LaterPost\Http\Controllers\Auth;
 
-use LaterPost\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use LaterPost\Http\Controllers\Controller;
 
 class PasswordController extends Controller
 {

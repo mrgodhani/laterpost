@@ -1,5 +1,6 @@
-<?php namespace LaterPost\Api;
+<?php
 
+namespace LaterPost\Api;
 
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Foundation\Validation\ValidatesRequests;

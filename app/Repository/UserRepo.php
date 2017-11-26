@@ -1,4 +1,6 @@
-<?php namespace LaterPost\Repository;
+<?php
+
+namespace LaterPost\Repository;
 
 use Bosnadev\Repositories\Eloquent\Repository;
 
@@ -8,5 +10,4 @@ class UserRepo extends Repository
     {
         return 'LaterPost\User';
     }
-
 }
