@@ -92,8 +92,6 @@ Linkedin apparently cannot be integrated because of limitation of API availabili
 
 ## Demo and Live application
 
-[https://laterpost.io](https://laterpost.io)
-
 ![img](./laterpost.gif)
 ![img](./laterpost2.gif)
 
