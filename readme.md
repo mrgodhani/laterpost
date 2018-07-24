@@ -1,4 +1,4 @@
-Laterpost
+Laterpost (NOT MAINTAINED ANYMORE)
 ==============
 
 Open source platform for scheduling twitter status updates.
