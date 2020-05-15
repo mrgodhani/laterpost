@@ -37,10 +37,10 @@ class RunScheduleTweets extends Command
     /**
      * Create a new command instance.
      *
-     * @param PostRepo $postRepo
+     * @param PostRepo    $postRepo
      * @param AccountRepo $accountRepo
      */
-    public function __construct(PostRepo $postRepo,AccountRepo $accountRepo)
+    public function __construct(PostRepo $postRepo, AccountRepo $accountRepo)
     {
         parent::__construct();
         $this->postRepo = $postRepo;
@@ -56,15 +56,14 @@ class RunScheduleTweets extends Command
     {
         $posts = $this->postRepo->getPendingByCurrent();
         $this->info(Carbon::now()->toDateTimeString());
-        foreach($posts as $post)
-        {
+        foreach ($posts as $post) {
             $account = [];
-            $account[] = $this->accountRepo->findBy('profile_id',$post->profile_id);
+            $account[] = $this->accountRepo->findBy('profile_id', $post->profile_id);
             $data = [
-                'content' => $post->content,
-                'accounts' => json_encode($account)
+                'content'  => $post->content,
+                'accounts' => json_encode($account),
             ];
-            $job = (new TwitterPost(!is_null($post->media_path) ? true : false,$post->media_path,$post->mimetype,$data))->delay(1);
+            $job = (new TwitterPost(!is_null($post->media_path) ? true : false, $post->media_path, $post->mimetype, $data))->delay(1);
             $this->dispatch($job);
             $this->postRepo->delete($post->id);
         }

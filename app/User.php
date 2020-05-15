@@ -18,7 +18,6 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-
     /**
      * The attributes that are mass assignable.
      *
@@ -38,7 +37,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     /**
-     * Passwords must always be hashed
+     * Passwords must always be hashed.
      *
      * @param $password
      */
@@ -48,11 +47,12 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
-     * Has Many Accounts
+     * Has Many Accounts.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function accounts(){
+    public function accounts()
+    {
         return $this->hasMany('LaterPost\Account');
     }
-
 }

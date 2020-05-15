@@ -45,18 +45,18 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root'   => storage_path('app'),
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'driver'     => 'local',
+            'root'       => storage_path('app/public'),
             'visibility' => 'public',
         ],
 
         's3' => [
             'driver' => 's3',
-            'key' => env('AMAZON_KEY'),
+            'key'    => env('AMAZON_KEY'),
             'secret' => env('AMAZON_SECRET'),
             'region' => env('AMAZON_REGION'),
             'bucket' => env('AMAZON_BUCKET'),

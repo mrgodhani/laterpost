@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-
-    protected $table = "accounts";
+    protected $table = 'accounts';
 
     /**
      * The attributes that are mass assignable.
@@ -15,22 +14,26 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'token', 'secret', 'username','avatar','profile_id','user_id','provider'
+        'token', 'secret', 'username', 'avatar', 'profile_id', 'user_id', 'provider',
     ];
 
     /**
-     * Belongs to user
+     * Belongs to user.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('LaterPost\User');
     }
 
     /**
-     * Has many posts
+     * Has many posts.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function posts(){
+    public function posts()
+    {
         return $this->hasMany('LaterPost\Post');
     }
 }

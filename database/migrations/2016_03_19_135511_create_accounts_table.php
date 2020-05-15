@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateAccountsTable extends Migration
 {
@@ -15,11 +15,11 @@ class CreateAccountsTable extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('token');
-            $table->string('secret')->nullable()->default(NULL);
+            $table->string('secret')->nullable()->default(null);
             $table->string('provider')->default('twitter');
-            $table->string('username')->nullable()->default(NULL);
-            $table->string('avatar')->nullable()->default(NULL);
-            $table->string('profile_id')->nullable()->default(NULL);
+            $table->string('username')->nullable()->default(null);
+            $table->string('avatar')->nullable()->default(null);
+            $table->string('profile_id')->nullable()->default(null);
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')
                 ->references('id')->on('users')

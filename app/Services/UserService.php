@@ -1,13 +1,13 @@
-<?php namespace LaterPost\Services;
+<?php
 
+namespace LaterPost\Services;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use LaterPost\Repository\UserRepo;
 
 /**
- * Class UserService
- * @package LaterPost\Services
+ * Class UserService.
  */
 class UserService
 {
@@ -18,6 +18,7 @@ class UserService
 
     /**
      * UserService constructor.
+     *
      * @param UserRepo $userRepo
      */
     public function __construct(UserRepo $userRepo)
@@ -26,63 +27,75 @@ class UserService
     }
 
     /**
-     * Create new user
+     * Create new user.
+     *
      * @param $data
+     *
      * @return mixed
      */
-    public function createUser($data){
+    public function createUser($data)
+    {
         $user = $this->userRepo->create($data);
+
         return Auth::generateTokenById($user->id);
     }
 
     /**
-     *  Delete Account
+     *  Delete Account.
      */
-    public function deleteAccount(){
+    public function deleteAccount()
+    {
         $this->userRepo->delete(Auth::user()->id);
     }
 
     /**
-     * Update user's password
+     * Update user's password.
+     *
      * @param $password
      */
-    public function  updatePassword($password)
+    public function updatePassword($password)
     {
-        $this->userRepo->update(['password' => Hash::make($password)],Auth::user()->id);
+        $this->userRepo->update(['password' => Hash::make($password)], Auth::user()->id);
     }
 
     /**
-     * Update password by email
+     * Update password by email.
+     *
      * @param $email
      * @param $password
      */
-    public function updatePasswordByEmail($email,$password)
+    public function updatePasswordByEmail($email, $password)
     {
-        $this->userRepo->update(['password' => Hash::make($password)],$email,'email');
+        $this->userRepo->update(['password' => Hash::make($password)], $email, 'email');
     }
 
     /**
-     * Update Email
+     * Update Email.
+     *
      * @param $email
      */
-    public function updateEmail($email){
-        $this->userRepo->update(['email' => $email],Auth::user()->id);
+    public function updateEmail($email)
+    {
+        $this->userRepo->update(['email' => $email], Auth::user()->id);
     }
 
     /**
-     * Update user's timezone
+     * Update user's timezone.
+     *
      * @param $timezone
      */
-    public function updateTimezone($timezone){
-        $this->userRepo->update(['timezone' => $timezone],Auth::user()->id);
+    public function updateTimezone($timezone)
+    {
+        $this->userRepo->update(['timezone' => $timezone], Auth::user()->id);
     }
 
     /**
-     * Update shortener domain
+     * Update shortener domain.
+     *
      * @param $domain
      */
     public function updateDomain($domain)
     {
-        $this->userRepo->update(['default_shortener' => $domain],Auth::user()->id);
+        $this->userRepo->update(['default_shortener' => $domain], Auth::user()->id);
     }
 }
